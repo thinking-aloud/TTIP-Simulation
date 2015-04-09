@@ -6,22 +6,21 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
 public class SimpleSlickGame extends BasicGame {
     
     private TiledMap tiledMap;
-    private Image carHorizontal;
-    private Image carVerical;
-    private int carWidth;
+//    private Image carHorizontal;
+//    private Image carVerical;
+//    private int carWidth;
     
-    private final int initHorizontalXPos = 0;
-    private final int initHorizontalYPos = 96;
-    private final int initVerticalXPos = 73;
-    private final int initVerticalYPos = 0;
-
+    private Car car1;
+//    private Car car2;
+    private Car car3;
+//    private Car car4;
+    
     public SimpleSlickGame(String gamename) {
         super(gamename);
     }
@@ -29,34 +28,30 @@ public class SimpleSlickGame extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         tiledMap = new TiledMap("res/streetgrid.tmx");
-        carHorizontal = new Image("res/car.png");
-        carVerical = new Image("res/car.png");
-        carVerical.rotate(90);      
-        carWidth = carHorizontal.getWidth();
+        
+        car1 = new Car(true);
+        car3 = new Car(false);
+        
+//        car2 = new Car(true);
+//        car4 = new Car(false);
     }
 
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
+        car1.move();
+//        car2.move();
+        car3.move();
+//        car4.move();
     }
 
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
         
-        // horizontal cars
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 4; j++) {
-                carHorizontal.draw(initHorizontalXPos + (i * 2 * carWidth), initHorizontalYPos + j * 3 * tiledMap.getTileHeight());
-            }
-        }
-        
-        // vertical cars
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 10; j++) {
-                carVerical.draw( initVerticalXPos + i * 3 * tiledMap.getTileHeight(), initVerticalYPos + (j * 2 * carWidth));
-            }
-        }
-//        g.drawString("Howdy!", 100, 100);
+        car1.getImage().draw(car1.getX(), car1.getY());
+//        car2.getImage().draw(car2.getX(), car2.getY());
+        car3.getImage().draw(car3.getX(), car3.getY());
+//        car4.getImage().draw(car4.getX(), car4.getY());
     }
 
     public static void main(String[] args) {
