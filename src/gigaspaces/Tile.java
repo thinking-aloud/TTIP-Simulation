@@ -3,52 +3,57 @@ package gigaspaces;
 import com.gigaspaces.annotation.pojo.SpaceId;
 import com.gigaspaces.annotation.pojo.SpaceIndex;
 import com.gigaspaces.metadata.index.SpaceIndexType;
+import java.awt.Point;
 
 public class Tile {
 
-    private Integer x, y, ssn;
+    private String id;
     private Boolean occupied;
+    private int x, y;
 
     // Default constructor (required by XAP)
-    public Tile() {}
-
-    public Tile(Integer ssn, Integer x, Integer y, Boolean occ) {
-        this.ssn = ssn;
-        this.x = x;
-        this.y = y;
-        this.occupied = occ;
+    public Tile() {
     }
 
-    @SpaceId(autoGenerate=false)
-    public Integer getSsn() {
-        return ssn;
+    public Tile(Point position, Boolean occupied) {
+        this.x = position.x;
+        this.y = position.y;
+        this.occupied = occupied;
     }
-    public void setSsn(Integer ssn) {
-        this.ssn = ssn;
+    
+    @SpaceId(autoGenerate = true)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
     public String toString() {
-        return "Tile #" + ssn + ": " + getX() + " " + getY() + " " + isOccupied();
+        return "id:" + id + " x:" + x + " y:" + y + " " + isOccupied();
     }
 
-    @SpaceIndex(type=SpaceIndexType.BASIC)
-    public Integer getX() {
+    @SpaceIndex(type = SpaceIndexType.BASIC)
+    public int getX() {
         return x;
     }
 
-    public void setX(Integer x) {
+    public void setX(int x) {
         this.x = x;
     }
 
-    public Integer getY() {
+    @SpaceIndex(type = SpaceIndexType.BASIC)
+    public int getY() {
         return y;
     }
 
-    public void setY(Integer y) {
+    public void setY(int y) {
         this.y = y;
     }
 
+    @SpaceIndex(type = SpaceIndexType.BASIC)
     public Boolean isOccupied() {
         return occupied;
     }

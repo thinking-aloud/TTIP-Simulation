@@ -1,6 +1,6 @@
 package slick2d;
 
-import gigaspaces.Tile;
+import gigaspaces.XapHelper;
 import java.awt.Point;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -15,33 +15,38 @@ public class Car {
     private final boolean horizontal;
     private final Image image;
     private Point position; // messured in tiles
+    private final XapHelper xapHelper;
 
     // private, can't be called from outside
     private Car(Point point, boolean horizontal) throws SlickException {
         this.horizontal = horizontal;
         position = point;
+        
+        xapHelper = new XapHelper();
 
-        setOccupied(position, true);
+        xapHelper.setOccupied(position, true);
 
-        image = new Image("res/car.png");
 
         if (!horizontal) {
+            image = new Image("res/car_red.png");
             image.rotate(90);
+        } else {
+            image = new Image("res/car_blue.png");
         }
     }
 
     //
     // static factory methods
     //
-    public static Car createHorizontalCar(int row) throws SlickException {
-        int x = 0;
+    public static Car createHorizontalCar(int column, int row) throws SlickException {
+        int x = column;
         int y = (3 * row) + 1; // 3 because every 3rd tile has a street and one offset
         return new Car(new Point(x, y), true);
     }
 
-    public static Car createVerticalCar(int column) throws SlickException {
+    public static Car createVerticalCar(int column, int row) throws SlickException {
         int x = (3 * column) + 1;
-        int y = 0;
+        int y = row;
         return new Car(new Point(x, y), false);
     }
 
@@ -49,13 +54,11 @@ public class Car {
     // public methods
     //
     public void move() {
-        if (!isOccupied(getNextTile())) {
-            setOccupied(position, false);
-            setOccupied(getNextTile(), true);
+        if (!xapHelper.isOccupied(getNextTile())) {
+            xapHelper.setOccupied(position, false);
+            xapHelper.setOccupied(getNextTile(), true);
 
             position = getNextTile();
-
-            // TODO WRITE POSITION TO SERVER
         }
     }
 
@@ -87,22 +90,6 @@ public class Car {
     //
     // private methods
     //
-    private boolean isOccupied(Point point) {
-//        return getTile(point).isOccupied();
-        return false;
-    }
-
-    private void setOccupied(Point point, boolean occupied) {
-        getTile(point).setOccupied(occupied);
-
-        //write
-    }
-
-    private Tile getTile(Point point) {
-        // TODO
-        return new Tile();
-    }
-
     private Point getNextTile() {
         int x = position.x;
         int y = position.y;
