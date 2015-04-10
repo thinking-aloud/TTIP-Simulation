@@ -6,8 +6,8 @@ import org.newdawn.slick.SlickException;
 public class Car {
 
     private final boolean horizontal;
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private final Image image;
 
     // private, can't be called from outside
@@ -25,36 +25,40 @@ public class Car {
 
     // static factory methods
     public static Car createHorizontalCar(int row) throws SlickException {
-        int x = 0;
+        int x = 17;
         int y = 96 + (row * 192);
         return new Car(x, y, true);
     }
 
     public static Car createVerticalCar(int column) throws SlickException {
         int x = 74 + (column * 192);
-        int y = 0;
+        int y = 23;
         return new Car(x, y, false);
     }
 
     public void move() {
+        int step = 64;
+        
         if (horizontal) {
-            x++;
-            if (x++ > 1152) {
-                x = 0;
+            if (x + step < 1152) {
+                x = x + step;
+            } else {
+                x = 17;
             }
         } else {
-            y++;
-            if (y++ > 768) {
-                y = 0;
+            if (y + step < 768) {
+                y = y + step;
+            } else {
+                y = 17;
             }
         }
     }
-
-    public int getX() {
+    
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 

@@ -10,11 +10,13 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
 public class SimpleSlickGame extends BasicGame {
-    
+
     private TiledMap tiledMap;
-    
+    private static final int FPS = 1;
+    private float t = 0.1f;
+
     private final Car[] cars = new Car[10];
-    
+
     public SimpleSlickGame(String gamename) {
         super(gamename);
     }
@@ -22,17 +24,17 @@ public class SimpleSlickGame extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         tiledMap = new TiledMap("res/streetgrid.tmx");
-        
+
         // horizontal cars
         for (int i = 0; i < 4; i++) {
             cars[i] = Car.createHorizontalCar(i);
         }
-        
+
         // vartical cars
-         for (int i = 0; i < 6; i++) {
-            cars[i+4] = Car.createVerticalCar(i);
+        for (int i = 0; i < 6; i++) {
+            cars[i + 4] = Car.createVerticalCar(i);
         }
-        
+
     }
 
     @Override
@@ -45,8 +47,8 @@ public class SimpleSlickGame extends BasicGame {
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
-        
-        for(Car car : cars) {
+
+        for (Car car : cars) {
             car.getImage().draw(car.getX(), car.getY());
         }
     }
@@ -55,6 +57,7 @@ public class SimpleSlickGame extends BasicGame {
         try {
             AppGameContainer appgc;
             appgc = new AppGameContainer(new SimpleSlickGame("Simple Slick Game"));
+            appgc.setTargetFrameRate(FPS);
             appgc.setDisplayMode(1152, 768, false);
             appgc.start();
         } catch (SlickException ex) {
