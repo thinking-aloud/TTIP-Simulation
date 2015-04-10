@@ -15,19 +15,19 @@ public class Program {
         GigaSpace gigaSpace = new GigaSpaceConfigurer(configurer).create();
 
         System.out.println("Write (store) a couple of entries in the data grid:");
-        gigaSpace.write(new Person(1, "Vincent", "Chase"));
-        gigaSpace.write(new Person(2, "Johnny", "Drama"));
+        gigaSpace.write(new Tile(1, 2, 1, true));
+        gigaSpace.write(new Tile(2, 2, 2, false));
 
         System.out.println("Read (retrieve) an entry from the grid by its id:");
-        Person result1 = gigaSpace.readById(Person.class, 1);
+        Tile result1 = gigaSpace.readById(Tile.class, 1);
         System.out.println("Result: " + result1);
 
         System.out.println("Read an entry from the grid using a SQL-like query:");
-        Person result2 = gigaSpace.read(new SQLQuery<Person>(Person.class, "firstName=?", "Johnny"));
+        Tile result2 = gigaSpace.read(new SQLQuery<Tile>(Tile.class, "x=?", "2"));
         System.out.println("Result: " + result2);
 
         System.out.println("Read all entries of type Person from the grid:");
-        Person[] results = gigaSpace.readMultiple(new Person());
+        Tile[] results = gigaSpace.readMultiple(new Tile());
         System.out.println("Result: " + java.util.Arrays.toString(results));
 
         configurer.close();
