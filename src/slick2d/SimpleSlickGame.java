@@ -12,14 +12,8 @@ import org.newdawn.slick.tiled.TiledMap;
 public class SimpleSlickGame extends BasicGame {
     
     private TiledMap tiledMap;
-//    private Image carHorizontal;
-//    private Image carVerical;
-//    private int carWidth;
     
-    private Car car1;
-//    private Car car2;
-    private Car car3;
-//    private Car car4;
+    private final Car[] cars = new Car[10];
     
     public SimpleSlickGame(String gamename) {
         super(gamename);
@@ -29,29 +23,32 @@ public class SimpleSlickGame extends BasicGame {
     public void init(GameContainer gc) throws SlickException {
         tiledMap = new TiledMap("res/streetgrid.tmx");
         
-        car1 = new Car(true);
-        car3 = new Car(false);
+        // horizontal cars
+        for (int i = 0; i < 4; i++) {
+            cars[i] = Car.createHorizontalCar(i);
+        }
         
-//        car2 = new Car(true);
-//        car4 = new Car(false);
+        // vartical cars
+         for (int i = 0; i < 6; i++) {
+            cars[i+4] = Car.createVerticalCar(i);
+        }
+        
     }
 
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
-        car1.move();
-//        car2.move();
-        car3.move();
-//        car4.move();
+        for(Car car : cars) {
+            car.move();
+        }
     }
 
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
         
-        car1.getImage().draw(car1.getX(), car1.getY());
-//        car2.getImage().draw(car2.getX(), car2.getY());
-        car3.getImage().draw(car3.getX(), car3.getY());
-//        car4.getImage().draw(car4.getX(), car4.getY());
+        for(Car car : cars) {
+            car.getImage().draw(car.getX(), car.getY());
+        }
     }
 
     public static void main(String[] args) {

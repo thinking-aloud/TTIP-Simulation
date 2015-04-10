@@ -4,27 +4,39 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class Car {
+
     private final boolean horizontal;
     private int x;
     private int y;
-    private Image image;
+    private final Image image;
 
-    public Car(boolean horizontal) throws SlickException {
+    // private, can't be called from outside
+    private Car(int x, int y, boolean horizontal) throws SlickException {
+        this.x = x;
+        this.y = y;
         this.horizontal = horizontal;
-        
+
         image = new Image("res/car.png");
-        
-        if (horizontal) {
-            x = 0;
-            y = 96;
-        } else {
-            x = 73;
-            y = 0;
+
+        if (!horizontal) {
             image.rotate(90);
         }
     }
-    
-    public void move () {
+
+    // static factory methods
+    public static Car createHorizontalCar(int row) throws SlickException {
+        int x = 0;
+        int y = 96 + (row * 192);
+        return new Car(x, y, true);
+    }
+
+    public static Car createVerticalCar(int column) throws SlickException {
+        int x = 74 + (column * 192);
+        int y = 0;
+        return new Car(x, y, false);
+    }
+
+    public void move() {
         if (horizontal) {
             x++;
             if (x++ > 1152) {
@@ -49,5 +61,5 @@ public class Car {
     public Image getImage() {
         return image;
     }
-    
+
 }
