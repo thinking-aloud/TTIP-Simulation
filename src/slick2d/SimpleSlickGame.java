@@ -13,7 +13,6 @@ public class SimpleSlickGame extends BasicGame {
 
     private TiledMap tiledMap;
     private static final int FPS = 1;
-    private float t = 0.1f;
 
     private final Car[] cars = new Car[10];
 
@@ -34,12 +33,12 @@ public class SimpleSlickGame extends BasicGame {
         for (int i = 0; i < 6; i++) {
             cars[i + 4] = Car.createVerticalCar(i);
         }
-
     }
 
     @Override
     public void update(GameContainer gc, int i) throws SlickException {
-        for(Car car : cars) {
+        for (Car car : cars) {
+//            System.out.println("position: (" + cars[0].getCurrentXTile() + "," +  cars[0].getCurrentYTile() + ")");
             car.move();
         }
     }

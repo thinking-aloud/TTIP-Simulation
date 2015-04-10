@@ -5,16 +5,19 @@ import org.newdawn.slick.SlickException;
 
 public class Car {
 
+    private static final int horizontalOffsetX = 17;
+    private static final int verticalOffsetY = 23;
+    private static final int tileSize = 64;
     private final boolean horizontal;
-    private float x;
-    private float y;
     private final Image image;
+    private int x;
+    private int y;
 
     // private, can't be called from outside
     private Car(int x, int y, boolean horizontal) throws SlickException {
+        this.horizontal = horizontal;
         this.x = x;
         this.y = y;
-        this.horizontal = horizontal;
 
         image = new Image("res/car.png");
 
@@ -25,45 +28,62 @@ public class Car {
 
     // static factory methods
     public static Car createHorizontalCar(int row) throws SlickException {
-        int x = 17;
-        int y = 96 + (row * 192);
+        int x = horizontalOffsetX;
+        int y = (tileSize + 32) + (row * 3 * tileSize);
         return new Car(x, y, true);
     }
 
     public static Car createVerticalCar(int column) throws SlickException {
-        int x = 74 + (column * 192);
-        int y = 23;
+        int x = (tileSize + 10) + (column * 3 * tileSize);
+        int y = verticalOffsetY;
         return new Car(x, y, false);
     }
 
     public void move() {
-        int step = 64;
-        
+
         if (horizontal) {
-            if (x + step < 1152) {
-                x = x + step;
-            } else {
-                x = 17;
+            if (!isOccupied(x + tileSize, y)) {
+                if (x + tileSize < 1152) {
+                    x += tileSize;
+                } else {
+                    x = horizontalOffsetX;
+                }
             }
         } else {
-            if (y + step < 768) {
-                y = y + step;
-            } else {
-                y = 17;
+            if (!isOccupied(x, y + tileSize)) {
+                if (y + tileSize < 768) {
+                    y += tileSize;
+                } else {
+                    y = verticalOffsetY;
+                }
             }
         }
     }
-    
-    public float getX() {
+
+    private boolean isOccupied(int x, int y) {
+        return false;
+    }
+
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 
     public Image getImage() {
         return image;
+    }
+
+    public int getCurrentXTile() {
+        System.out.println("x: " + x);
+        return x / tileSize;
+    }
+
+    public int getCurrentYTile() {
+        System.out.println("y: " + y);
+        return y / tileSize;
     }
 
 }
