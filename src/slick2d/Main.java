@@ -51,18 +51,18 @@ public class Main extends BasicGame {
         for (int row = 0; row < 4; row++) {
             cars[row] = Car.createHorizontalCar(0, row);
             cars[row + 4] = Car.createHorizontalCar(2, row);
-            cars[row + 8] = Car.createHorizontalCar(4, row);
-            cars[row + 12] = Car.createHorizontalCar(6, row);
-            cars[row + 16] = Car.createHorizontalCar(8, row);
+            cars[row + 8] = Car.createHorizontalCar(3, row);
+            cars[row + 12] = Car.createHorizontalCar(5, row);
+            cars[row + 16] = Car.createHorizontalCar(6, row);
         }
 
         // vartical cars
         for (int column = 0; column < 6; column++) {
             cars[column + 20] = Car.createVerticalCar(column, 0);
-            cars[column + 26] = Car.createVerticalCar(column, 2);
-            cars[column + 32] = Car.createVerticalCar(column, 4);
-            cars[column + 38] = Car.createVerticalCar(column, 6);
-            cars[column + 44] = Car.createVerticalCar(column, 8);
+            cars[column + 26] = Car.createVerticalCar(column, 1);
+            cars[column + 32] = Car.createVerticalCar(column, 2);
+            cars[column + 38] = Car.createVerticalCar(column, 3);
+            cars[column + 44] = Car.createVerticalCar(column, 4);
         }
     }
 
