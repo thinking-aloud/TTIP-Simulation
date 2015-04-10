@@ -29,7 +29,7 @@ public class Tile {
 
     @Override
     public String toString() {
-        return "Tile #" + ssn + ": " + getX() + " " + getY() + " " + getOccupied();
+        return "Tile #" + ssn + ": " + getX() + " " + getY() + " " + isOccupied();
     }
 
     @SpaceIndex(type=SpaceIndexType.BASIC)
@@ -49,7 +49,7 @@ public class Tile {
         this.y = y;
     }
 
-    public Boolean getOccupied() {
+    public Boolean isOccupied() {
         return occupied;
     }
 
