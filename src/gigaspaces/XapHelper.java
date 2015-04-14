@@ -16,6 +16,19 @@ public class XapHelper {
         configurer.lookupGroups("gigaspaces-10.1.0-XAPPremium-ga");
         gigaSpace = new GigaSpaceConfigurer(configurer).create();
     }
+    
+    public void initRoadTiles() {
+        gigaSpace.clear(null);
+
+        // initialize street fields
+        for (int i = 0; i < 18; i++) {
+            for (int j = 0; j < 12; j++) {
+                if (j % 3 == 1 || i % 3 == 1) {
+                    gigaSpace.write(new Tile(new Point(i, j), false));
+                }
+            }
+        }
+    }
 
     public boolean isOccupied(Point point) {
         Tile result = gigaSpace.read(new SQLQuery<Tile>(

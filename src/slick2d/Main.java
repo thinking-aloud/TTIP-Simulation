@@ -1,7 +1,6 @@
 package slick2d;
 
-import gigaspaces.Tile;
-import java.awt.Point;
+import gigaspaces.XapHelper;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
@@ -10,40 +9,23 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
-import org.openspaces.core.GigaSpace;
-import org.openspaces.core.GigaSpaceConfigurer;
-import org.openspaces.core.space.SpaceProxyConfigurer;
 
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
     private static final int FPS = 1;
-
     private final Car[] cars = new Car[50];
+    private final XapHelper xapHelper;
 
     public Main(String gamename) {
         super(gamename);
+        xapHelper = new XapHelper();
     }
 
     @Override
     public void init(GameContainer gc) throws SlickException {
-
-        SpaceProxyConfigurer configurer = new SpaceProxyConfigurer("myGrid");
-        configurer.lookupGroups("gigaspaces-10.1.0-XAPPremium-ga");
-        GigaSpace gigaSpace = new GigaSpaceConfigurer(configurer).create();
-
-        gigaSpace.clear(null);
-
-        // initialize street fields
-        for (int i = 0; i < 18; i++) {
-            for (int j = 0; j < 12; j++) {
-                if (j % 3 == 1 || i % 3 == 1) {
-                    gigaSpace.write(new Tile(new Point(i, j), false));
-                }
-            }
-        }
-        configurer.close();
-
+        xapHelper.initRoadTiles();
+        
         tiledMap = new TiledMap("res/streetgrid.tmx");
 
         // THIS IS DONE SHITTY! NEEDS IMPROVEMENT
