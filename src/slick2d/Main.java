@@ -13,8 +13,8 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    private static final int FPS = 1;
-    private final Car[] cars = new Car[50];
+    private static final int FPS = 5;
+    private final Car[] cars = new Car[60];
     private final XapHelper xapHelper;
 
     public Main(String gamename) {
@@ -36,15 +36,17 @@ public class Main extends BasicGame {
             cars[row + 8] = Car.createHorizontalCar(3, row);
             cars[row + 12] = Car.createHorizontalCar(5, row);
             cars[row + 16] = Car.createHorizontalCar(6, row);
+            cars[row + 20] = Car.createHorizontalCar(8, row);
         }
 
         // vartical cars
         for (int column = 0; column < 6; column++) {
-            cars[column + 20] = Car.createVerticalCar(column, 0);
-            cars[column + 26] = Car.createVerticalCar(column, 1);
-            cars[column + 32] = Car.createVerticalCar(column, 2);
-            cars[column + 38] = Car.createVerticalCar(column, 3);
-            cars[column + 44] = Car.createVerticalCar(column, 4);
+            cars[column + 24] = Car.createVerticalCar(column, 0);
+            cars[column + 30] = Car.createVerticalCar(column, 1);
+            cars[column + 36] = Car.createVerticalCar(column, 2);
+            cars[column + 42] = Car.createVerticalCar(column, 3);
+            cars[column + 48] = Car.createVerticalCar(column, 4);
+            cars[column + 54] = Car.createVerticalCar(column, 5);
         }
     }
 

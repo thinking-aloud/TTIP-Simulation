@@ -55,8 +55,8 @@ public class Car {
     //
     public void move() {
         if (!xapHelper.isOccupied(getNextTile())) {
-            xapHelper.setOccupied(position, false);
             xapHelper.setOccupied(getNextTile(), true);
+            xapHelper.setOccupied(position, false);
 
             position = getNextTile();
         }
