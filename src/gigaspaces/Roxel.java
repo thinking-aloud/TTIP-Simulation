@@ -1,5 +1,6 @@
 package gigaspaces;
 
+import com.gigaspaces.annotation.pojo.SpaceId;
 import java.awt.Point;
 import slick2d.Car;
 
@@ -8,7 +9,8 @@ import slick2d.Car;
  * @author jo
  */
 public class Roxel {
-    private Point gridPosition;
+    private String id;
+    private final Point gridPosition;
     private Roxel north, east, south, west;
     private Car car;
     
@@ -16,18 +18,25 @@ public class Roxel {
         gridPosition = pos;
     }
 
+    // constructor for Gigaspaces querying
+    public Roxel() {
+        this.gridPosition = null;
+    }
+    
+    @SpaceId(autoGenerate = true)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /**
      * @return the gridPosition
      */
     public Point getGridPosition() {
         return gridPosition;
-    }
-
-    /**
-     * @param gridPosition the gridPosition to set
-     */
-    public void setGridPosition(Point gridPosition) {
-        this.gridPosition = gridPosition;
     }
 
     /**

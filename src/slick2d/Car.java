@@ -1,33 +1,38 @@
 package slick2d;
 
+import com.gigaspaces.annotation.pojo.SpaceId;
+import gigaspaces.Roxel;
 import gigaspaces.XapHelper;
-import java.awt.Point;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class Car {
+public class Car implements Runnable{
 
+    private String id;
+    private char direction;
+    private Roxel position;
+    private final Image image;
+
+    
     private static final int horizontalOffsetX = 17;
     private static final int horizontalOffsetY = 32;
     private static final int verticalOffsetX = 10;
     private static final int verticalOffsetY = 23;
     private static final int tileSize = 64;
-    private final boolean horizontal;
-    private final Image image;
-    private Point position; // messured in tiles
+    
     private final XapHelper xapHelper;
 
     // private, can't be called from outside
-    private Car(Point point, boolean horizontal) throws SlickException {
-        this.horizontal = horizontal;
-        position = point;
+    private Car(Roxel rox, char dir) throws SlickException {
+        this.direction = dir;
+        position = rox;
         
         xapHelper = new XapHelper();
 
-        xapHelper.setOccupied(position, true);
+        xapHelper.setOccupied(position, this);
 
 
-        if (!horizontal) {
+        if (direction == 'e') {
             image = new Image("res/car_red.png");
             image.rotate(90);
         } else {
@@ -38,28 +43,33 @@ public class Car {
     //
     // static factory methods
     //
-    public static Car createHorizontalCar(int column, int row) throws SlickException {
-        int x = column;
-        int y = (3 * row) + 1; // 3 because every 3rd tile has a street and one offset
-        return new Car(new Point(x, y), true);
+    public static Car createHorizontalCar(Roxel rox) throws SlickException {
+        return new Car(rox, 'e');
     }
 
-    public static Car createVerticalCar(int column, int row) throws SlickException {
-        int x = (3 * column) + 1;
-        int y = row;
-        return new Car(new Point(x, y), false);
+    public static Car createVerticalCar(Roxel rox) throws SlickException {
+        return new Car(rox, 's');
     }
 
     //
     // public methods
     //
     public void move() {
-        if (!xapHelper.isOccupied(getNextTile())) {
-            xapHelper.setOccupied(getNextTile(), true);
-            xapHelper.setOccupied(position, false);
+        if (!xapHelper.isOccupied(getNextRoxel())) {
+            xapHelper.setOccupied(getNextRoxel(), this);
+            xapHelper.setOccupied(position, this);
 
-            position = getNextTile();
+            position = getNextRoxel();
         }
+    }
+    
+    @SpaceId(autoGenerate = true)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Image getImage() {
@@ -68,8 +78,8 @@ public class Car {
 
     // returns the position of the car in pixels
     public int getX() {
-        int x = position.x * tileSize;
-        if (horizontal) {
+        int x = position.getGridPosition().x * tileSize;
+        if (direction == 'e') {
             x += horizontalOffsetX;
         } else {
             x += verticalOffsetX;
@@ -78,8 +88,8 @@ public class Car {
     }
 
     public int getY() {
-        int y = position.y * tileSize;
-        if (horizontal) {
+        int y = position.getGridPosition().y * tileSize;
+        if (direction == 'e') {
             y += horizontalOffsetY;
         } else {
             y += verticalOffsetY;
@@ -90,25 +100,24 @@ public class Car {
     //
     // private methods
     //
-    private Point getNextTile() {
-        int x = position.x;
-        int y = position.y;
-
-        if (horizontal) {
-            if (x < 17) {
-                x++;
-            } else {
-                x = 0;
-            }
-        } else {
-            if (y < 11) {
-                y++;
-            } else {
-                y = 0;
-            }
+    private Roxel getNextRoxel() {
+        Roxel next = null;
+        switch (direction) {
+            case 'e':
+                next = position.getEast();
+                break;
+            case 's':
+                next = position.getSouth();
+                break;
+            default:
+                break;
         }
+        return next;
+    }
 
-        return new Point(x, y);
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
