@@ -16,13 +16,13 @@ public class XapHelper {
         gigaSpace = new GigaSpaceConfigurer(configurer).create();
     }
     
-    public void initRoadTiles() {
+    public void initRoadTiles(int mapWidth, int mapHeight) {
         gigaSpace.clear(null);
 
         
         // initialize street fields
-        for (int i = 0; i < 18; i++) {
-            for (int j = 0; j < 12; j++) {
+        for (int i = 0; i < mapWidth; i++) {
+            for (int j = 0; j < mapHeight; j++) {
                 if (j % 3 == 1 || i % 3 == 1) {
                     gigaSpace.write(new Roxel(i, j));
                 }
@@ -31,24 +31,39 @@ public class XapHelper {
         
         // include connection between neighbours
         Roxel template = new Roxel();
+        // Roxel roxes[] = gigaSpace.readMultiple(new SQLQuery<Roxel>(Roxel.class, "", ""));
         Roxel roxes[] = gigaSpace.readMultiple(template);
         System.out.println("Roxes: " + roxes.length + " " + Arrays.toString(roxes));
         for (Roxel rox: roxes) {
-            Roxel tmp = gigaSpace.read(new Roxel(rox.getX(), rox.getY()-1));
-            if (tmp != null) {
-                rox.setNorth(tmp.getId());
+            // Default
+            Roxel north = gigaSpace.read(new Roxel(rox.getX(), rox.getY()-1));
+            Roxel east = gigaSpace.read(new Roxel(rox.getX()+1, rox.getY()));
+            Roxel south = gigaSpace.read(new Roxel(rox.getX(), rox.getY()+1));
+            Roxel west = gigaSpace.read(new Roxel(rox.getX()-1, rox.getY()));
+            // Edges
+            if (north == null && rox.getY() == 0) {
+                north = gigaSpace.read(new Roxel(rox.getX(), mapHeight-1));
             }
-            tmp = gigaSpace.read(new Roxel(rox.getX()+1, rox.getY()));
-            if (tmp != null) {
-                rox.setEast(tmp.getId());
+            if (east == null && rox.getX() == mapWidth-1) {
+                east = gigaSpace.read(new Roxel(0, rox.getY()));
             }
-            tmp = gigaSpace.read(new Roxel(rox.getX(), rox.getY()+1));
-            if (tmp != null) {
-                rox.setSouth(tmp.getId());
+            if (south == null && rox.getY() == mapHeight-1) {
+                south = gigaSpace.read(new Roxel(rox.getX(), 0));
             }
-            tmp = gigaSpace.read(new Roxel(rox.getX()-1, rox.getY()));
-            if (tmp != null) {
-                rox.setWest(tmp.getId());
+            if (west == null && rox.getX() == 0) {
+                west = gigaSpace.read(new Roxel(mapWidth-1, rox.getY()));
+            }
+            if (north != null) {
+                rox.setNorth(north.getId());
+            }
+            if (east != null) {
+                rox.setEast(east.getId());
+            }
+            if (south != null) {
+                rox.setSouth(south.getId());
+            }
+            if (west != null) {
+                rox.setWest(west.getId());
             }
             gigaSpace.write(rox);
         }
@@ -77,7 +92,8 @@ public class XapHelper {
     }
     
     public Roxel getRoxelByCoordinates(int x, int y) {
-        return gigaSpace.read(new Roxel(x, y));
+        Roxel template = new Roxel();
+        return gigaSpace.read(template);
     }
     
     public Roxel getRoxelById(String id) {

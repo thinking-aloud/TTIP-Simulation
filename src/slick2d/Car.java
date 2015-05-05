@@ -5,7 +5,7 @@ import gigaspaces.XapHelper;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class Car implements Runnable {
+public class Car {
 
     public enum DrivingDirection {
         WEST,
@@ -16,7 +16,7 @@ public class Car implements Runnable {
     
     private String id, positionRoxel;
     private final Image image;
-    private DrivingDirection drivingDirection;
+    private final DrivingDirection drivingDirection;
     
     private static final int horizontalOffsetX = 17;
     private static final int horizontalOffsetY = 32;
@@ -117,10 +117,4 @@ public class Car implements Runnable {
         }
         return next;
     }
-
-    @Override
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

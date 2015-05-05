@@ -13,13 +13,14 @@ public class Roxel {
     public Roxel(Integer x, Integer y) {
         this.x = x;
         this.y = y;
+        this.id = String.format("%03d-%03d", x, y);
     }
 
     // constructor for Gigaspaces querying
     public Roxel() {
     }
     
-    @SpaceId(autoGenerate = true)
+    @SpaceId(autoGenerate = false)
     public String getId() {
         return this.id;
     }
@@ -106,28 +107,28 @@ public class Roxel {
     /**
      * @return the x
      */
-    public int getX() {
+    public Integer getX() {
         return this.x;
     }
 
     /**
      * @return the y
      */
-    public int getY() {
+    public Integer getY() {
         return this.y;
     }
 
     /**
      * @param x the x to set
      */
-    public void setX(int x) {
+    public void setX(Integer x) {
         this.x = x;
     }
 
     /**
      * @param y the y to set
      */
-    public void setY(int y) {
+    public void setY(Integer y) {
         this.y = y;
     }
 }
