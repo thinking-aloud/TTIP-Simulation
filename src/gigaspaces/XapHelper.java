@@ -1,10 +1,9 @@
 package gigaspaces;
 
-import java.awt.Point;
+import java.util.Arrays;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.GigaSpaceConfigurer;
 import org.openspaces.core.space.SpaceProxyConfigurer;
-import slick2d.Car;
 
 public class XapHelper {
 
@@ -25,30 +24,40 @@ public class XapHelper {
         for (int i = 0; i < 18; i++) {
             for (int j = 0; j < 12; j++) {
                 if (j % 3 == 1 || i % 3 == 1) {
-                    gigaSpace.write(new Roxel(new Point(i, j)));
+                    gigaSpace.write(new Roxel(i, j));
                 }
             }
         }
         
         // include connection between neighbours
-        Roxel roxes[] = gigaSpace.readMultiple(new Roxel());
+        Roxel template = new Roxel();
+        Roxel roxes[] = gigaSpace.readMultiple(template);
+        System.out.println("Roxes: " + roxes.length + " " + Arrays.toString(roxes));
         for (Roxel rox: roxes) {
-            Roxel tmp = gigaSpace.read(new Roxel(new Point(rox.getGridPosition().x, rox.getGridPosition().y-1)));
+            Roxel tmp = gigaSpace.read(new Roxel(rox.getX(), rox.getY()-1));
             if (tmp != null) {
-                rox.setNorth(tmp);
+                rox.setNorth(tmp.getId());
             }
-            tmp = gigaSpace.read(new Roxel(new Point(rox.getGridPosition().x+1, rox.getGridPosition().y)));
+            tmp = gigaSpace.read(new Roxel(rox.getX()+1, rox.getY()));
             if (tmp != null) {
-                rox.setEast(tmp);
+                rox.setEast(tmp.getId());
             }
-            rox.setSouth(gigaSpace.read(new Roxel(new Point(rox.getGridPosition().x, rox.getGridPosition().y+1))));
-            rox.setWest(gigaSpace.read(new Roxel(new Point(rox.getGridPosition().x-1, rox.getGridPosition().y))));
+            tmp = gigaSpace.read(new Roxel(rox.getX(), rox.getY()+1));
+            if (tmp != null) {
+                rox.setSouth(tmp.getId());
+            }
+            tmp = gigaSpace.read(new Roxel(rox.getX()-1, rox.getY()));
+            if (tmp != null) {
+                rox.setWest(tmp.getId());
+            }
             gigaSpace.write(rox);
         }
     }
 
-    public boolean isOccupied(Roxel rox) {
-        Roxel result = gigaSpace.read(rox);
+    public boolean isOccupied(String rox) {
+        Roxel qry = new Roxel();
+        qry.setId(rox);
+        Roxel result = gigaSpace.read(qry);
         
         if(result != null) {
             return result.getCar() != null;
@@ -56,8 +65,10 @@ public class XapHelper {
         return false;
     }
 
-    public void setOccupied(Roxel rox, Car car) {
-        Roxel result = gigaSpace.read(rox);
+    public void setOccupied(String rox, String car) {
+        Roxel qry = new Roxel();
+        qry.setId(rox);
+        Roxel result = gigaSpace.read(qry);
         
         if(result != null) {
             result.setCar(car);
@@ -65,7 +76,13 @@ public class XapHelper {
         }
     }
     
-    public Roxel getRoxel(Point pos) {
-        return gigaSpace.read(new Roxel(pos));
+    public Roxel getRoxelByCoordinates(int x, int y) {
+        return gigaSpace.read(new Roxel(x, y));
+    }
+    
+    public Roxel getRoxelById(String id) {
+        Roxel rox = new Roxel();
+        rox.setId(id);
+        return gigaSpace.read(rox);
     }
 }

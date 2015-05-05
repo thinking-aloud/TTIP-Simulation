@@ -1,18 +1,22 @@
 package slick2d;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
-import gigaspaces.Roxel;
 import gigaspaces.XapHelper;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class Car implements Runnable{
+public class Car implements Runnable {
 
-    private String id;
-    private char direction;
-    private Roxel position;
+    public enum DrivingDirection {
+        WEST,
+        EAST,
+        NORTH,
+        SOUTH
+    }
+    
+    private String id, positionRoxel;
     private final Image image;
-
+    private DrivingDirection drivingDirection;
     
     private static final int horizontalOffsetX = 17;
     private static final int horizontalOffsetY = 32;
@@ -23,32 +27,31 @@ public class Car implements Runnable{
     private final XapHelper xapHelper;
 
     // private, can't be called from outside
-    private Car(Roxel rox, char dir) throws SlickException {
-        this.direction = dir;
-        position = rox;
-        
+    private Car(String rox, DrivingDirection carFacing) throws SlickException {
+        this.drivingDirection = carFacing;
+        positionRoxel = rox;
+
         xapHelper = new XapHelper();
 
-        xapHelper.setOccupied(position, this);
+        xapHelper.setOccupied(positionRoxel, this.id);
 
-
-        if (direction == 'e') {
+        if (carFacing == DrivingDirection.EAST) {
             image = new Image("res/car_red.png");
-            image.rotate(90);
         } else {
             image = new Image("res/car_blue.png");
+            image.rotate(90);
         }
     }
 
     //
     // static factory methods
     //
-    public static Car createHorizontalCar(Roxel rox) throws SlickException {
-        return new Car(rox, 'e');
+    public static Car createHorizontalCar(String rox) throws SlickException {
+        return new Car(rox, DrivingDirection.EAST);
     }
 
-    public static Car createVerticalCar(Roxel rox) throws SlickException {
-        return new Car(rox, 's');
+    public static Car createVerticalCar(String rox) throws SlickException {
+        return new Car(rox, DrivingDirection.SOUTH);
     }
 
     //
@@ -56,10 +59,10 @@ public class Car implements Runnable{
     //
     public void move() {
         if (!xapHelper.isOccupied(getNextRoxel())) {
-            xapHelper.setOccupied(getNextRoxel(), this);
-            xapHelper.setOccupied(position, this);
+            xapHelper.setOccupied(getNextRoxel(), this.id);
+            xapHelper.setOccupied(positionRoxel, this.id);
 
-            position = getNextRoxel();
+            positionRoxel = getNextRoxel();
         }
     }
     
@@ -78,8 +81,8 @@ public class Car implements Runnable{
 
     // returns the position of the car in pixels
     public int getX() {
-        int x = position.getGridPosition().x * tileSize;
-        if (direction == 'e') {
+        int x = xapHelper.getRoxelById(positionRoxel).getX() * tileSize;
+        if (this.drivingDirection == DrivingDirection.EAST) {
             x += horizontalOffsetX;
         } else {
             x += verticalOffsetX;
@@ -88,8 +91,8 @@ public class Car implements Runnable{
     }
 
     public int getY() {
-        int y = position.getGridPosition().y * tileSize;
-        if (direction == 'e') {
+        int y = xapHelper.getRoxelById(positionRoxel).getY() * tileSize;
+        if (this.drivingDirection == DrivingDirection.EAST) {
             y += horizontalOffsetY;
         } else {
             y += verticalOffsetY;
@@ -100,14 +103,14 @@ public class Car implements Runnable{
     //
     // private methods
     //
-    private Roxel getNextRoxel() {
-        Roxel next = null;
-        switch (direction) {
-            case 'e':
-                next = position.getEast();
+    private String getNextRoxel() {
+        String next = null;
+        switch (drivingDirection) {
+            case EAST:
+                next = xapHelper.getRoxelById(positionRoxel).getEast();
                 break;
-            case 's':
-                next = position.getSouth();
+            case SOUTH:
+                next = xapHelper.getRoxelById(positionRoxel).getSouth();
                 break;
             default:
                 break;

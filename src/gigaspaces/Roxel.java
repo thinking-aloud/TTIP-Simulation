@@ -1,31 +1,27 @@
 package gigaspaces;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
-import java.awt.Point;
-import slick2d.Car;
 
 /**
  *
  * @author jo
  */
 public class Roxel {
-    private String id;
-    private final Point gridPosition;
-    private Roxel north, east, south, west;
-    private Car car;
+    private String id, north, east, south, west, car;
+    private Integer x, y;
     
-    public Roxel(Point pos) {
-        gridPosition = pos;
+    public Roxel(Integer x, Integer y) {
+        this.x = x;
+        this.y = y;
     }
 
     // constructor for Gigaspaces querying
     public Roxel() {
-        this.gridPosition = null;
     }
     
     @SpaceId(autoGenerate = true)
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {
@@ -33,79 +29,105 @@ public class Roxel {
     }
 
     /**
-     * @return the gridPosition
-     */
-    public Point getGridPosition() {
-        return gridPosition;
-    }
-
-    /**
      * @return the north
      */
-    public Roxel getNorth() {
-        return north;
+    public String getNorth() {
+        return this.north;
     }
 
     /**
      * @param north the north to set
      */
-    public void setNorth(Roxel north) {
+    public void setNorth(String north) {
         this.north = north;
     }
 
     /**
      * @return the east
      */
-    public Roxel getEast() {
-        return east;
+    public String getEast() {
+        return this.east;
     }
 
     /**
      * @param east the east to set
      */
-    public void setEast(Roxel east) {
+    public void setEast(String east) {
         this.east = east;
     }
 
     /**
      * @return the south
      */
-    public Roxel getSouth() {
-        return south;
+    public String getSouth() {
+        return this.south;
     }
 
     /**
      * @param south the south to set
      */
-    public void setSouth(Roxel south) {
+    public void setSouth(String south) {
         this.south = south;
     }
 
     /**
      * @return the west
      */
-    public Roxel getWest() {
-        return west;
+    public String getWest() {
+        return this.west;
     }
 
     /**
      * @param west the west to set
      */
-    public void setWest(Roxel west) {
+    public void setWest(String west) {
         this.west = west;
     }
 
     /**
      * @return the car
      */
-    public Car getCar() {
-        return car;
+    public String getCar() {
+        return this.car;
     }
 
     /**
      * @param car the car to set
      */
-    public void setCar(Car car) {
+    public void setCar(String car) {
         this.car = car;
+    }
+    
+    @Override
+    public String toString() {
+        return "Roxel #" + getId() + ", Position: " + getX() + ", " + getY();
+    }
+
+    /**
+     * @return the x
+     */
+    public int getX() {
+        return this.x;
+    }
+
+    /**
+     * @return the y
+     */
+    public int getY() {
+        return this.y;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
+     * @param y the y to set
+     */
+    public void setY(int y) {
+        this.y = y;
     }
 }
