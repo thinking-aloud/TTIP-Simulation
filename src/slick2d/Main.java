@@ -15,10 +15,10 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    private static final int FPS = 3;
+    private static final int FPS = 5;
     private final XapHelper xapHelper;
     private ArrayList<CarContainer> carContainers = new ArrayList();
-    // private ArrayList<Thread> carContainerThreads = new ArrayList();
+    private ArrayList<Thread> carContainerThreads = new ArrayList();
 
     public Main(String gamename) {
         super(gamename);
@@ -31,23 +31,23 @@ public class Main extends BasicGame {
         int mapHeight = tiledMap.getHeight();
         int mapWidth = tiledMap.getWidth();
         xapHelper.initRoadTiles(mapWidth, mapHeight);
-        xapHelper.initCars(mapWidth, mapHeight);
+        xapHelper.initCars(mapWidth, mapHeight, FPS);
         Car cars[] = xapHelper.getCars();
         for (Car car: cars) {
             CarContainer cc = CarContainer.createContainerWithExistingCar(car);
             carContainers.add(cc);
-            //carContainerThreads.add(new Thread(cc));
+            carContainerThreads.add(new Thread(cc));
         }
-        /*for (Thread t : carContainerThreads) {
+        for (Thread t : carContainerThreads) {
             t.start();
-        }*/
+        }
     }
 
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
-        for (CarContainer cont : carContainers) {
+        /*for (CarContainer cont : carContainers) {
             cont.move();
-        }
+        }*/
     }
 
     @Override

@@ -2,20 +2,22 @@ package slick2d;
 
 import gigaspaces.Car;
 import gigaspaces.XapHelper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-public class CarContainer {
+public class CarContainer implements Runnable {
 
     private Car car;
     private final Image image;
-    
-    private static final Integer horizontalOffsetX = 17;
-    private static final Integer horizontalOffsetY = 32;
-    private static final Integer verticalOffsetX = 10;
-    private static final Integer verticalOffsetY = 23;
-    private static final Integer tileSize = 64;
-    
+
+    private static final int horizontalOffsetX = 17;
+    private static final int horizontalOffsetY = 32;
+    private static final int verticalOffsetX = 10;
+    private static final int verticalOffsetY = 23;
+    private static final int tileSize = 64;
+
     private final XapHelper xapHelper;
 
     // private, can't be called from outside
@@ -35,15 +37,14 @@ public class CarContainer {
     // static factory methods
     //
     /*public static CarContainer createHorizontalCar(String rox) throws SlickException {
-        Car car = new Car(rox, Car.DrivingDirection.EAST);
-        return new CarContainer(car);
-    }
+     Car car = new Car(rox, Car.DrivingDirection.EAST);
+     return new CarContainer(car);
+     }
 
-    public static CarContainer createVerticalCar(String rox) throws SlickException {
-        Car car = new Car(rox, Car.DrivingDirection.SOUTH);
-        return new CarContainer(car);
-    }*/
-    
+     public static CarContainer createVerticalCar(String rox) throws SlickException {
+     Car car = new Car(rox, Car.DrivingDirection.SOUTH);
+     return new CarContainer(car);
+     }*/
     public static CarContainer createContainerWithExistingCar(Car car) throws SlickException {
         return new CarContainer(car);
     }
@@ -55,13 +56,15 @@ public class CarContainer {
         String next = getNextRoxel();
         if (!xapHelper.isOccupied(next)) {
             String oldPosition = getPositionRoxel();
-            xapHelper.occupyRoxel(next, this.getCar().getId());
-            this.car.setPositionRoxel(next);
-            xapHelper.updateCar(this.car);
-            xapHelper.releaseRoxel(oldPosition);
+            if (xapHelper.occupyRoxel(next, this.getCar().getId())) {
+                this.car.setPositionRoxel(next);
+                xapHelper.updateCar(this.car);
+                xapHelper.releaseRoxel(oldPosition);
+            }
+
         }
     }
-    
+
     public String getId() {
         return this.getCar().getId();
     }
@@ -119,7 +122,7 @@ public class CarContainer {
         }
         return next;
     }
-    
+
     /**
      * @return the positionRoxel
      */
@@ -132,5 +135,18 @@ public class CarContainer {
      */
     public Car getCar() {
         return car;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            this.move();
+            try {
+                long pause = 1000 / this.car.getSpeed();
+                Thread.sleep(pause);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
