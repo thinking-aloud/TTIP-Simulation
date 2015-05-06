@@ -1,5 +1,6 @@
 package slick2d;
 
+import gigaspaces.Car;
 import gigaspaces.XapHelper;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -14,9 +15,10 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    private static final int FPS = 1;
-    private final ArrayList<Car> cars = new ArrayList();
+    private static final int FPS = 3;
     private final XapHelper xapHelper;
+    private ArrayList<CarContainer> carContainers = new ArrayList();
+    // private ArrayList<Thread> carContainerThreads = new ArrayList();
 
     public Main(String gamename) {
         super(gamename);
@@ -29,29 +31,30 @@ public class Main extends BasicGame {
         int mapHeight = tiledMap.getHeight();
         int mapWidth = tiledMap.getWidth();
         xapHelper.initRoadTiles(mapWidth, mapHeight);
-        
-        
-        for (int row = 0; row < mapHeight; row++) {
-            if (row % 3 == 1) {
-                String startingPosition = xapHelper.getRoxelByCoordinates(0, row).getId();
-                cars.add(Car.createHorizontalCar(startingPosition));
-            }
+        xapHelper.initCars(mapWidth, mapHeight);
+        Car cars[] = xapHelper.getCars();
+        for (Car car: cars) {
+            CarContainer cc = CarContainer.createContainerWithExistingCar(car);
+            carContainers.add(cc);
+            //carContainerThreads.add(new Thread(cc));
         }
+        /*for (Thread t : carContainerThreads) {
+            t.start();
+        }*/
     }
 
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
-        for (Car car : cars) {
-            car.move();
+        for (CarContainer cont : carContainers) {
+            cont.move();
         }
     }
 
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
-
-        for (Car car : cars) {
-            car.getImage().draw(car.getX(), car.getY());
+        for (CarContainer cont : carContainers) {
+            cont.getImage().draw(cont.getX(), cont.getY());
         }
     }
 

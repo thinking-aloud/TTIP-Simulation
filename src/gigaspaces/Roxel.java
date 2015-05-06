@@ -14,6 +14,7 @@ public class Roxel {
         this.x = x;
         this.y = y;
         this.id = String.format("%03d-%03d", x, y);
+        this.car = null;
     }
 
     // constructor for Gigaspaces querying

@@ -1,6 +1,7 @@
 package gigaspaces;
 
 import java.util.Arrays;
+import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.GigaSpaceConfigurer;
 import org.openspaces.core.space.SpaceProxyConfigurer;
@@ -68,6 +69,33 @@ public class XapHelper {
             gigaSpace.write(rox);
         }
     }
+    
+    public void initCars(int mapWidth, int mapHeight) throws SlickException {
+        // Horizontal
+        for (int row = 0; row < mapHeight; row++) {
+            Roxel rox = getRoxelByCoordinates(0, row);
+            if (rox != null) {
+                String startingPosition = rox.getId();
+                Car car = new Car(startingPosition, Car.DrivingDirection.EAST);
+                // register Car to generate ID
+                gigaSpace.write(car);
+                Car gs_car = gigaSpace.read(car);
+                occupyRoxel(gs_car.getPositionRoxel(), gs_car.getId());
+            }
+        }
+        // Vertical
+        for (int column = 0; column < mapWidth; column++) {
+            Roxel rox = getRoxelByCoordinates(column, 0);
+            if (rox != null) {
+                String startingPosition = rox.getId();
+                Car car = new Car(startingPosition, Car.DrivingDirection.SOUTH);
+                // register Car to generate ID
+                gigaSpace.write(car);
+                Car gs_car = gigaSpace.read(car);
+                occupyRoxel(gs_car.getPositionRoxel(), gs_car.getId());
+            }
+        }
+    }
 
     public boolean isOccupied(String rox) {
         Roxel qry = new Roxel();
@@ -80,7 +108,7 @@ public class XapHelper {
         return false;
     }
 
-    public void setOccupied(String rox, String car) {
+    public void occupyRoxel(String rox, String car) {
         Roxel qry = new Roxel();
         qry.setId(rox);
         Roxel result = gigaSpace.read(qry);
@@ -91,8 +119,21 @@ public class XapHelper {
         }
     }
     
+    public void releaseRoxel(String rox) {
+        Roxel qry = new Roxel();
+        qry.setId(rox);
+        Roxel result = gigaSpace.read(qry);
+        
+        if(result != null) {
+            result.setCar(null);
+            gigaSpace.write(result);
+        }
+    }
+    
     public Roxel getRoxelByCoordinates(int x, int y) {
         Roxel template = new Roxel();
+        template.setX(x);
+        template.setY(y);
         return gigaSpace.read(template);
     }
     
@@ -100,5 +141,18 @@ public class XapHelper {
         Roxel rox = new Roxel();
         rox.setId(id);
         return gigaSpace.read(rox);
+    }
+
+    public Car[] getCars() throws SlickException {
+        Car cars[] = gigaSpace.readMultiple(new Car());
+        /*ArrayList<CarContainer> conts = new ArrayList();
+        for (Car car: cars) {
+            conts.add(CarContainer.createContainerWithExistingCar(car));
+        }*/
+        return cars;
+    }
+    
+    public void updateCar(Car car) {
+        gigaSpace.write(car);
     }
 }
