@@ -15,7 +15,7 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    private static final int FPS = 5;
+    private static final int FPS = 30;
     private final XapHelper xapHelper;
     private ArrayList<CarContainer> carContainers = new ArrayList();
     private ArrayList<Thread> carContainerThreads = new ArrayList();

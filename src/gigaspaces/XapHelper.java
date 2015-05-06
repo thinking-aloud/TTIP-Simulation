@@ -75,7 +75,7 @@ public class XapHelper {
             Roxel rox = getRoxelByCoordinates(0, row);
             if (rox != null) {
                 String startingPosition = rox.getId();
-                Car car = new Car(startingPosition, Car.DrivingDirection.EAST, speed);
+                Car car = new Car(startingPosition, Car.DrivingDirection.EAST, speed/10+1);
                 // register Car to generate ID
                 gigaSpace.write(car);
                 Car gs_car = gigaSpace.read(car);
@@ -87,7 +87,7 @@ public class XapHelper {
             Roxel rox = getRoxelByCoordinates(column, 0);
             if (rox != null) {
                 String startingPosition = rox.getId();
-                Car car = new Car(startingPosition, Car.DrivingDirection.SOUTH, speed);
+                Car car = new Car(startingPosition, Car.DrivingDirection.SOUTH, speed/10);
                 // register Car to generate ID
                 gigaSpace.write(car);
                 Car gs_car = gigaSpace.read(car);
@@ -110,7 +110,7 @@ public class XapHelper {
     public boolean occupyRoxel(String rox, String car) {
         Roxel qry = new Roxel();
         qry.setId(rox);
-        Roxel result = gigaSpace.read(qry);
+        Roxel result = gigaSpace.take(qry);
 
         if (result != null && result.getCar() == null) {
             result.setCar(car);
