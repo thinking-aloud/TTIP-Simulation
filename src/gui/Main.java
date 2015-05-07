@@ -58,13 +58,25 @@ public class Main extends BasicGame {
         tiledMap.render(0, 0);
 
         for (CarContainer container : carContainers) {
-            container.getImage().draw(container.getX(), container.getY());
+            Integer x = container.getX();
+            Integer y = container.getY();
+            if(x != null && y != null) {
+                container.getImage().draw(x, y);
+            }
         }
 
         // should be done like this, but the application is not thread save
 //        for (Car cars : xapHelper.getCars()) {
 //            CarContainer cc = new CarContainer(cars);
-//            cc.getImage().draw(cc.getX(), cc.getY());
+//            Integer x = cc.getX();
+//            Integer y = cc.getY();
+//            
+//            if(x != null && y != null) {
+//                cc.getImage().draw(x, y);
+//            } else {
+//                System.out.println("x: " + x);
+//                System.out.println("y: " + y);
+//            }
 //        }
     }
 
