@@ -1,6 +1,8 @@
 package domain;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
+import com.gigaspaces.annotation.pojo.SpaceIndex;
+import com.gigaspaces.metadata.index.SpaceIndexType;
 
 public class Roxel {
     private String id, north, east, south, west, car;
@@ -116,6 +118,7 @@ public class Roxel {
     /**
      * @return the x
      */
+    @SpaceIndex(type=SpaceIndexType.EXTENDED)
     public Integer getX() {
         return x;
     }
@@ -123,6 +126,7 @@ public class Roxel {
     /**
      * @return the y
      */
+    @SpaceIndex(type=SpaceIndexType.EXTENDED)
     public Integer getY() {
         return y;
     }
