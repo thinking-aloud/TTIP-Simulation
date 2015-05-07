@@ -9,7 +9,8 @@ public class Roxel implements Serializable {
 
     private String id, north, east, south, west;
     private Integer x, y;
-
+    private Car.DrivingDirection openDirection;
+    
     public Roxel(Integer x, Integer y) {
         this.x = x;
         this.y = y;
@@ -134,5 +135,23 @@ public class Roxel implements Serializable {
      */
     public void setY(Integer y) {
         this.y = y;
+    }
+
+    /**
+     * @return the openDirection
+     */
+    public Car.DrivingDirection getOpenDirection() {
+        return openDirection;
+    }
+
+    /**
+     * @param openDirection the openDirection to set
+     */
+    public void setOpenDirection(Car.DrivingDirection openDirection) {
+        this.openDirection = openDirection;
+    }
+    
+    public boolean isJunction() {
+        return (this.north != null && this.east != null && this.south != null && this.west != null);
     }
 }
