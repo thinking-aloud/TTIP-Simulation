@@ -15,14 +15,16 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    private static final int FPS = 30;
+    private static final int FPS = 10;
     private final XapHelper xapHelper;
-    private ArrayList<CarContainer> carContainers = new ArrayList();
-    private ArrayList<Thread> carContainerThreads = new ArrayList();
+    private final ArrayList<CarContainer> carContainers;
+    private final ArrayList<Thread> carContainerThreads;
 
     public Main(String gamename) {
         super(gamename);
         xapHelper = new XapHelper();
+        this.carContainers = new ArrayList();
+        this.carContainerThreads = new ArrayList();
     }
 
     @Override
@@ -33,11 +35,13 @@ public class Main extends BasicGame {
         xapHelper.initRoadTiles(mapWidth, mapHeight);
         xapHelper.initCars(mapWidth, mapHeight, FPS);
         Car cars[] = xapHelper.getCars();
+        
         for (Car car: cars) {
-            CarContainer cc = CarContainer.createContainerWithExistingCar(car);
+            CarContainer cc = new CarContainer(car);
             carContainers.add(cc);
             carContainerThreads.add(new Thread(cc));
         }
+        
         for (Thread t : carContainerThreads) {
             t.start();
         }
@@ -61,7 +65,7 @@ public class Main extends BasicGame {
     public static void main(String[] args) {
         try {
             AppGameContainer appgc;
-            appgc = new AppGameContainer(new Main("Simple Slick Game"));
+            appgc = new AppGameContainer(new Main("TTIP Simulation 2000"));
             appgc.setTargetFrameRate(FPS);
             appgc.setDisplayMode(1152, 768, false);
             appgc.start();

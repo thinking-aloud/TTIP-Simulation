@@ -23,7 +23,7 @@ public class Roxel {
     
     @SpaceId(autoGenerate = false)
     public String getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -34,7 +34,7 @@ public class Roxel {
      * @return the north
      */
     public String getNorth() {
-        return this.north;
+        return north;
     }
 
     /**
@@ -48,7 +48,7 @@ public class Roxel {
      * @return the east
      */
     public String getEast() {
-        return this.east;
+        return east;
     }
 
     /**
@@ -62,7 +62,7 @@ public class Roxel {
      * @return the south
      */
     public String getSouth() {
-        return this.south;
+        return south;
     }
 
     /**
@@ -76,7 +76,7 @@ public class Roxel {
      * @return the west
      */
     public String getWest() {
-        return this.west;
+        return west;
     }
 
     /**
@@ -90,7 +90,7 @@ public class Roxel {
      * @return the car
      */
     public String getCar() {
-        return this.car;
+        return car;
     }
 
     /**
@@ -109,14 +109,14 @@ public class Roxel {
      * @return the x
      */
     public Integer getX() {
-        return this.x;
+        return x;
     }
 
     /**
      * @return the y
      */
     public Integer getY() {
-        return this.y;
+        return y;
     }
 
     /**

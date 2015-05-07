@@ -8,8 +8,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class CarContainer implements Runnable {
-
-    private Car car;
+    private final Car car;
     private final Image image;
 
     private static final int horizontalOffsetX = 17;
@@ -20,33 +19,16 @@ public class CarContainer implements Runnable {
 
     private final XapHelper xapHelper;
 
-    // private, can't be called from outside
-    private CarContainer(Car car) throws SlickException {
+    public CarContainer(Car car) throws SlickException {
         this.car = car;
         this.xapHelper = new XapHelper();
 
-        if (this.car.getDrivingDirection() == Car.DrivingDirection.EAST) {
+        if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
             image = new Image("res/car_red.png");
         } else {
             image = new Image("res/car_blue.png");
             image.rotate(90);
         }
-    }
-
-    //
-    // static factory methods
-    //
-    /*public static CarContainer createHorizontalCar(String rox) throws SlickException {
-     Car car = new Car(rox, Car.DrivingDirection.EAST);
-     return new CarContainer(car);
-     }
-
-     public static CarContainer createVerticalCar(String rox) throws SlickException {
-     Car car = new Car(rox, Car.DrivingDirection.SOUTH);
-     return new CarContainer(car);
-     }*/
-    public static CarContainer createContainerWithExistingCar(Car car) throws SlickException {
-        return new CarContainer(car);
     }
 
     //
@@ -56,9 +38,9 @@ public class CarContainer implements Runnable {
         String next = getNextRoxel();
         if (!xapHelper.isOccupied(next)) {
             String oldPosition = getPositionRoxel();
-            if (xapHelper.occupyRoxel(next, this.getCar().getId())) {
-                this.car.setPositionRoxel(next);
-                xapHelper.updateCar(this.car);
+            if (xapHelper.occupyRoxel(next, car.getId())) {
+                car.setPositionRoxel(next);
+                xapHelper.updateCar(car);
                 xapHelper.releaseRoxel(oldPosition);
             }
 
@@ -127,7 +109,7 @@ public class CarContainer implements Runnable {
      * @return the positionRoxel
      */
     public String getPositionRoxel() {
-        return this.getCar().getPositionRoxel();
+        return car.getPositionRoxel();
     }
 
     /**
@@ -142,7 +124,7 @@ public class CarContainer implements Runnable {
         while (true) {
             this.move();
             try {
-                long pause = 1000 / this.car.getSpeed();
+                long pause = 1000 / car.getSpeed();
                 Thread.sleep(pause);
             } catch (InterruptedException ex) {
                 Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);
