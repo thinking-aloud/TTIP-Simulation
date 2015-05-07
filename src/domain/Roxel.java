@@ -1,11 +1,7 @@
-package gigaspaces;
+package domain;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
 
-/**
- *
- * @author jo
- */
 public class Roxel {
     private String id, north, east, south, west, car;
     private Integer x, y;
@@ -21,11 +17,19 @@ public class Roxel {
     public Roxel() {
     }
     
+    /**
+     * 
+     * @return the id
+     */
     @SpaceId(autoGenerate = false)
     public String getId() {
         return id;
     }
 
+    /**
+     * 
+     * @param id sets the id
+     */
     public void setId(String id) {
         this.id = id;
     }
@@ -100,6 +104,10 @@ public class Roxel {
         this.car = car;
     }
     
+    /**
+     * 
+     * @return a nicely formated string
+     */
     @Override
     public String toString() {
         return "Roxel #" + getId() + ", Position: " + getX() + ", " + getY();

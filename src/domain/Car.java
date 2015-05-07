@@ -1,16 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package gigaspaces;
+package domain;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
 
-/**
- *
- * @author jo
- */
 public class Car {
 
     public enum DrivingDirection {
@@ -28,6 +19,9 @@ public class Car {
         this.drivingDirection = dir;
     }
     
+    /**
+     * empty constructor used by TS
+     */
     public Car() {
         
     }

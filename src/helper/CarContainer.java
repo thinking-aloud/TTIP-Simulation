@@ -1,7 +1,7 @@
-package slick2d;
+package helper;
 
-import gigaspaces.Car;
-import gigaspaces.XapHelper;
+import domain.Car;
+import gui.Main;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.Image;
@@ -116,7 +116,7 @@ public class CarContainer implements Runnable {
         while (true) {
             move();
             try {
-                long pause = 1000 / Main.FPS;
+                long pause = 1000 / Main.getFPS();
                 Thread.sleep(pause);
             } catch (InterruptedException ex) {
                 Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);

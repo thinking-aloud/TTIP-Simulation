@@ -1,7 +1,8 @@
-package slick2d;
+package gui;
 
-import gigaspaces.Car;
-import gigaspaces.XapHelper;
+import helper.CarContainer;
+import domain.Car;
+import helper.XapHelper;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,4 +78,9 @@ public class Main extends BasicGame {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public static int getFPS() {
+        return FPS;
+    }
+    
 }

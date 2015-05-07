@@ -1,5 +1,7 @@
-package gigaspaces;
+package helper;
 
+import domain.Car;
+import domain.Roxel;
 import java.util.Arrays;
 import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
