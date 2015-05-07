@@ -17,6 +17,7 @@ public class Main extends BasicGame {
 
     private TiledMap tiledMap;
     static final int FPS = 60;
+    static final int SPEED = 1000; // sleep between updates (0=fastest)
     private final XapHelper xapHelper;
     private final ArrayList<CarContainer> carContainers;
     private final ArrayList<Thread> carContainerThreads;
@@ -34,7 +35,7 @@ public class Main extends BasicGame {
         int mapHeight = tiledMap.getHeight();
         int mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
-        xapHelper.initCars(mapWidth, mapHeight, FPS);
+        xapHelper.initCars(mapWidth, mapHeight, SPEED);
         Car cars[] = xapHelper.getCars();
 
         for (Car car : cars) {

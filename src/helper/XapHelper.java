@@ -33,7 +33,6 @@ public class XapHelper {
 
         // include connection between neighbours
         Roxel template = new Roxel();
-        // Roxel roxes[] = gigaSpace.readMultiple(new SQLQuery<Roxel>(Roxel.class, "", ""));
         Roxel roxes[] = gigaSpace.readMultiple(template);
         System.out.println("Roxes: " + roxes.length + " " + Arrays.toString(roxes));
         for (Roxel rox : roxes) {
@@ -80,13 +79,27 @@ public class XapHelper {
                 car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
+            
+            Roxel rox2 = getRoxelByCoordinates(2, row);
+            if (rox != null) {
+                Car car = new Car(Car.DrivingDirection.EAST, speed);
+                car.setOccupiedRoxel(rox2);
+                gigaSpace.write(car);
+            }
         }
         // Vertical
         for (int column = 0; column < mapWidth; column++) {
             Roxel rox = getRoxelByCoordinates(column, 0);
             if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.SOUTH, speed / 10);
+                Car car = new Car(Car.DrivingDirection.SOUTH, speed);
                 car.setOccupiedRoxel(rox);
+                gigaSpace.write(car);
+            }
+            
+            Roxel rox2 = getRoxelByCoordinates(column, 2);
+            if (rox != null) {
+                Car car = new Car(Car.DrivingDirection.SOUTH, speed);
+                car.setOccupiedRoxel(rox2);
                 gigaSpace.write(car);
             }
         }

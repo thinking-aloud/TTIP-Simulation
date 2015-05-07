@@ -11,7 +11,6 @@ public class CarContainer implements Runnable {
 
     private final Car car;
     private final Image image;
-    private final long speed = 1000; // sleep between car moves
 
     private static final int horizontalOffsetX = 17;
     private static final int horizontalOffsetY = 32;
@@ -118,7 +117,7 @@ public class CarContainer implements Runnable {
         while (true) {
             move();
             try {
-                Thread.sleep(speed);
+                Thread.sleep(car.getSpeed());
             } catch (InterruptedException ex) {
                 Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);
             }
