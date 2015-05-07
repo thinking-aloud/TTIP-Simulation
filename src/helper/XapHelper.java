@@ -106,7 +106,7 @@ public class XapHelper {
             // MORE CARS!!!
             rox = getRoxelByCoordinates(column, 2);
             if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.SOUTH, speed / 10);
+                Car car = new Car(Car.DrivingDirection.SOUTH, speed);
                 car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
