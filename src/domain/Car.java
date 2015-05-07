@@ -5,25 +5,25 @@ import com.gigaspaces.annotation.pojo.SpaceId;
 public class Car {
 
     public enum DrivingDirection {
+
         WEST,
         EAST,
         NORTH,
         SOUTH
     }
-    
-    private String id, positionRoxel;
+
+    private String id;
     private DrivingDirection drivingDirection;
-    
-    public Car(String pos, DrivingDirection dir, Integer speed) {
-        this.positionRoxel = pos;
+    private Roxel occupiedRoxel;
+
+    public Car(DrivingDirection dir, Integer speed) {
         this.drivingDirection = dir;
     }
-    
+
     /**
      * empty constructor used by TS
      */
     public Car() {
-        
     }
 
     /**
@@ -42,20 +42,6 @@ public class Car {
     }
 
     /**
-     * @return the positionRoxel
-     */
-    public String getPositionRoxel() {
-        return positionRoxel;
-    }
-
-    /**
-     * @param positionRoxel the positionRoxel to set
-     */
-    public void setPositionRoxel(String positionRoxel) {
-        this.positionRoxel = positionRoxel;
-    }
-
-    /**
      * @return the drivingDirection
      */
     public DrivingDirection getDrivingDirection() {
@@ -67,6 +53,14 @@ public class Car {
      */
     public void setDrivingDirection(DrivingDirection drivingDirection) {
         this.drivingDirection = drivingDirection;
+    }
+
+    public Roxel getOccupiedRoxel() {
+        return occupiedRoxel;
+    }
+
+    public void setOccupiedRoxel(Roxel occupiedRoxel) {
+        this.occupiedRoxel = occupiedRoxel;
     }
 
 }

@@ -16,11 +16,10 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    static final int FPS = 100;
+    static final int FPS = 60;
     private final XapHelper xapHelper;
     private final ArrayList<CarContainer> carContainers;
     private final ArrayList<Thread> carContainerThreads;
-    private static AppGameContainer appgc;
 
     public Main(String gamename) {
         super(gamename);
@@ -60,45 +59,22 @@ public class Main extends BasicGame {
         for (CarContainer container : carContainers) {
             Integer x = container.getX();
             Integer y = container.getY();
-            if(x != null && y != null) {
+
+            if (x != null && y != null) {
                 container.getImage().draw(x, y);
             }
         }
-
-        // should be done like this, but the application is not thread save
-//        for (Car cars : xapHelper.getCars()) {
-//            CarContainer cc = new CarContainer(cars);
-//            Integer x = cc.getX();
-//            Integer y = cc.getY();
-//            
-//            if(x != null && y != null) {
-//                cc.getImage().draw(x, y);
-//            } else {
-//                System.out.println("x: " + x);
-//                System.out.println("y: " + y);
-//            }
-//        }
     }
 
     public static void main(String[] args) {
         try {
-            appgc = new AppGameContainer(new Main("TTIP Simulation 2000"));
+            AppGameContainer appgc = new AppGameContainer(new Main("TTIP Simulation 2000"));
             appgc.setTargetFrameRate(FPS);
             appgc.setDisplayMode(1152, 768, false);
             appgc.start();
         } catch (SlickException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public static int getFPS() {
-        int fps = appgc.getFPS();
-
-        if (fps > 0) {
-            return fps;
-        }
-
-        return 1;
     }
 
 }

@@ -2,7 +2,6 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
-import gui.Main;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.Image;
@@ -12,6 +11,7 @@ public class CarContainer implements Runnable {
 
     private final Car car;
     private final Image image;
+    private final long speed = 1000; // sleep between car moves
 
     private static final int horizontalOffsetX = 17;
     private static final int horizontalOffsetY = 32;
@@ -37,16 +37,12 @@ public class CarContainer implements Runnable {
     // public methods
     //
     public void move() {
-        String next = getNextRoxel();
-        if (!xapHelper.isOccupied(next)) {
-            String oldPosition = getPositionRoxel();
-            if (xapHelper.occupyRoxel(next, car.getId())) {
-                car.setPositionRoxel(next);
-                xapHelper.updateCar(car);
-                xapHelper.releaseRoxel(oldPosition);
-            }
+        Roxel next = getNextRoxel();
+        Roxel oldRoxel = car.getOccupiedRoxel();
 
-        }
+        car.setOccupiedRoxel(next);
+        xapHelper.updateCar(car);
+        xapHelper.releaseRoxel(oldRoxel);
     }
 
     public Image getImage() {
@@ -55,67 +51,66 @@ public class CarContainer implements Runnable {
 
     // returns the position of the car in pixels
     public Integer getX() {
-        Roxel roxel = xapHelper.getRoxelById(getPositionRoxel());
-        if (roxel != null) {
-            int x = roxel.getX() * tileSize;
-            if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
-                x += horizontalOffsetX;
-            } else {
-                x += verticalOffsetX;
-            }
-            return x;
+        Roxel roxel = car.getOccupiedRoxel();
+
+        if (roxel == null) {
+            return null;
         }
-        return null;
+
+        int x = roxel.getX() * tileSize;
+        if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
+            x += horizontalOffsetX;
+        } else {
+            x += verticalOffsetX;
+        }
+        return x;
     }
 
     public Integer getY() {
-        Roxel roxel = xapHelper.getRoxelById(getPositionRoxel());
-        if (roxel != null) {
-            int y = roxel.getY() * tileSize;
-            if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
-                y += horizontalOffsetY;
-            } else {
-                y += verticalOffsetY;
-            }
-            return y;
+        Roxel roxel = car.getOccupiedRoxel();
+
+        if (roxel == null) {
+            return null;
         }
-        return null;
+
+        int y = roxel.getY() * tileSize;
+        if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
+            y += horizontalOffsetY;
+        } else {
+            y += verticalOffsetY;
+        }
+        return y;
     }
 
     //
     // private methods
     //
-    private String getNextRoxel() {
-        String next;
-        Roxel roxel = xapHelper.getRoxelById(getPositionRoxel());
-        if(roxel == null) {
-            return getPositionRoxel();
-        }
+    private Roxel getNextRoxel() {
+        Roxel next;
+        Roxel roxel = car.getOccupiedRoxel();
+
         switch (car.getDrivingDirection()) {
             case EAST:
-                next = roxel.getEast();
+                next = xapHelper.takeRoxelById(roxel.getEast());
                 break;
             case SOUTH:
-                next = roxel.getSouth();
+                next = xapHelper.takeRoxelById(roxel.getSouth());
                 break;
             case NORTH:
-                next = roxel.getNorth();
+                next = xapHelper.takeRoxelById(roxel.getNorth());
                 break;
             case WEST:
-                next = roxel.getWest();
+                next = xapHelper.takeRoxelById(roxel.getWest());
                 break;
             default:
-                next = getPositionRoxel();
+                next = roxel;
                 break;
         }
-        return next;
-    }
+        if (next != null) {
+            return next;
+        }
 
-    /**
-     * @return the positionRoxel
-     */
-    private String getPositionRoxel() {
-        return car.getPositionRoxel();
+        return roxel;
     }
 
     @Override
@@ -123,11 +118,11 @@ public class CarContainer implements Runnable {
         while (true) {
             move();
             try {
-                long pause = 1000 / Main.getFPS();
-                Thread.sleep(pause);
+                Thread.sleep(speed);
             } catch (InterruptedException ex) {
                 Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+
 }

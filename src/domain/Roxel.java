@@ -3,24 +3,29 @@ package domain;
 import com.gigaspaces.annotation.pojo.SpaceId;
 import com.gigaspaces.annotation.pojo.SpaceIndex;
 import com.gigaspaces.metadata.index.SpaceIndexType;
+import java.io.Serializable;
 
-public class Roxel {
-    private String id, north, east, south, west, car;
+public class Roxel implements Serializable {
+
+    private String id, north, east, south, west;
     private Integer x, y;
-    
+
     public Roxel(Integer x, Integer y) {
         this.x = x;
         this.y = y;
         this.id = String.format("%03d-%03d", x, y);
-        this.car = null;
     }
 
     // constructor for Gigaspaces querying
     public Roxel() {
     }
-    
+
+    public Roxel(String id) {
+        this.id = id;
+    }
+
     /**
-     * 
+     *
      * @return the id
      */
     @SpaceId(autoGenerate = false)
@@ -29,7 +34,7 @@ public class Roxel {
     }
 
     /**
-     * 
+     *
      * @param id sets the id
      */
     public void setId(String id) {
@@ -93,21 +98,7 @@ public class Roxel {
     }
 
     /**
-     * @return the car
-     */
-    public String getCar() {
-        return car;
-    }
-
-    /**
-     * @param car the car to set
-     */
-    public void setCar(String car) {
-        this.car = car;
-    }
-    
-    /**
-     * 
+     *
      * @return a nicely formated string
      */
     @Override
