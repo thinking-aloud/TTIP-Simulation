@@ -15,7 +15,7 @@ import org.newdawn.slick.tiled.TiledMap;
 public class Main extends BasicGame {
 
     private TiledMap tiledMap;
-    private static final int FPS = 10;
+    static final int FPS = 1;
     private final XapHelper xapHelper;
     private final ArrayList<CarContainer> carContainers;
     private final ArrayList<Thread> carContainerThreads;
@@ -32,7 +32,7 @@ public class Main extends BasicGame {
         tiledMap = new TiledMap("res/streetgrid.tmx");
         int mapHeight = tiledMap.getHeight();
         int mapWidth = tiledMap.getWidth();
-        xapHelper.initRoadTiles(mapWidth, mapHeight);
+        xapHelper.initRoxels(mapWidth, mapHeight);
         xapHelper.initCars(mapWidth, mapHeight, FPS);
         Car cars[] = xapHelper.getCars();
         
@@ -49,17 +49,21 @@ public class Main extends BasicGame {
 
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
-        /*for (CarContainer cont : carContainers) {
-            cont.move();
-        }*/
     }
 
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
-        for (CarContainer cont : carContainers) {
-            cont.getImage().draw(cont.getX(), cont.getY());
+        
+        for (CarContainer container : carContainers) {
+            container.getImage().draw(container.getX(), container.getY());
         }
+        
+        // should be done like this, but the application is not thread save
+//        for (Car cars : xapHelper.getCars()) {
+//            CarContainer cc = new CarContainer(cars);
+//            cc.getImage().draw(cc.getX(), cc.getY());
+//        }
     }
 
     public static void main(String[] args) {

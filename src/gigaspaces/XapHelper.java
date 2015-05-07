@@ -17,7 +17,7 @@ public class XapHelper {
         gigaSpace = new GigaSpaceConfigurer(configurer).create();
     }
 
-    public void initRoadTiles(int mapWidth, int mapHeight) {
+    public void initRoxels(int mapWidth, int mapHeight) {
         gigaSpace.clear(null);
 
         // initialize street fields
@@ -75,7 +75,7 @@ public class XapHelper {
             Roxel rox = getRoxelByCoordinates(0, row);
             if (rox != null) {
                 String startingPosition = rox.getId();
-                Car car = new Car(startingPosition, Car.DrivingDirection.EAST, speed/10+1);
+                Car car = new Car(startingPosition, Car.DrivingDirection.EAST, speed);
                 // register Car to generate ID
                 gigaSpace.write(car);
                 Car gs_car = gigaSpace.read(car);
@@ -145,12 +145,7 @@ public class XapHelper {
     }
 
     public Car[] getCars() throws SlickException {
-        Car cars[] = gigaSpace.readMultiple(new Car());
-        /*ArrayList<CarContainer> conts = new ArrayList();
-         for (Car car: cars) {
-         conts.add(CarContainer.createContainerWithExistingCar(car));
-         }*/
-        return cars;
+        return gigaSpace.readMultiple(new Car());
     }
 
     public void updateCar(Car car) {

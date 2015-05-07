@@ -47,14 +47,6 @@ public class CarContainer implements Runnable {
         }
     }
 
-    public String getId() {
-        return this.getCar().getId();
-    }
-
-    public void setId(String id) {
-        this.getCar().setId(id);
-    }
-
     public Image getImage() {
         return image;
     }
@@ -108,7 +100,7 @@ public class CarContainer implements Runnable {
     /**
      * @return the positionRoxel
      */
-    public String getPositionRoxel() {
+    private String getPositionRoxel() {
         return car.getPositionRoxel();
     }
 
@@ -122,9 +114,9 @@ public class CarContainer implements Runnable {
     @Override
     public void run() {
         while (true) {
-            this.move();
+            move();
             try {
-                long pause = 1000 / car.getSpeed();
+                long pause = 1000 / Main.FPS;
                 Thread.sleep(pause);
             } catch (InterruptedException ex) {
                 Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);
