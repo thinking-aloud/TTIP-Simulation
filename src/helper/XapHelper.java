@@ -2,6 +2,7 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
+import domain.TrafficLight;
 import java.util.Arrays;
 import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
@@ -66,6 +67,13 @@ public class XapHelper {
             if (west != null) {
                 rox.setWest(west.getId());
             }
+            if (rox.isJunction()) {
+                rox.setOpenDirection(Car.DrivingDirection.EAST);
+            } else if (rox.getNorth() != null && rox.getSouth() != null) {
+                rox.setOpenDirection(Car.DrivingDirection.SOUTH);
+            } else if (rox.getEast() != null && rox.getWest() != null) {
+                rox.setOpenDirection(Car.DrivingDirection.EAST);
+            }
             gigaSpace.write(rox);
         }
     }
@@ -79,11 +87,11 @@ public class XapHelper {
                 car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
-            
-            Roxel rox2 = getRoxelByCoordinates(2, row);
+            // MORE CARS!!!
+            rox = getRoxelByCoordinates(2, row);
             if (rox != null) {
                 Car car = new Car(Car.DrivingDirection.EAST, speed);
-                car.setOccupiedRoxel(rox2);
+                car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
         }
@@ -95,11 +103,11 @@ public class XapHelper {
                 car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
-            
-            Roxel rox2 = getRoxelByCoordinates(column, 2);
+            // MORE CARS!!!
+            rox = getRoxelByCoordinates(column, 2);
             if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.SOUTH, speed);
-                car.setOccupiedRoxel(rox2);
+                Car car = new Car(Car.DrivingDirection.SOUTH, speed / 10);
+                car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
         }
@@ -134,4 +142,12 @@ public class XapHelper {
         gigaSpace.write(car);
     }
 
+    public boolean isGreen(Roxel rox, Car.DrivingDirection dir) {
+        return (rox.getOpenDirection() == dir);
+    }
+
+    public void passRoxelToTrafficLight(Roxel oldRoxel) {
+        Thread tl = new Thread(new TrafficLight(oldRoxel));
+        tl.start();
+    }
 }

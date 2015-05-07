@@ -2,6 +2,7 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
+import domain.TrafficLight;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.Image;
@@ -37,11 +38,17 @@ public class CarContainer implements Runnable {
     //
     public void move() {
         Roxel next = getNextRoxel();
-        Roxel oldRoxel = car.getOccupiedRoxel();
-
-        car.setOccupiedRoxel(next);
-        xapHelper.updateCar(car);
-        xapHelper.releaseRoxel(oldRoxel);
+        if (next != null && xapHelper.isGreen(next, this.car.getDrivingDirection())) {
+            next = xapHelper.takeRoxelById(next.getId());
+            Roxel oldRoxel = car.getOccupiedRoxel();
+            car.setOccupiedRoxel(next);
+            xapHelper.updateCar(car);
+            if (oldRoxel.isJunction()) {
+                xapHelper.passRoxelToTrafficLight(oldRoxel);
+            } else {
+                xapHelper.releaseRoxel(oldRoxel);
+            }
+        }
     }
 
     public Image getImage() {
@@ -90,26 +97,22 @@ public class CarContainer implements Runnable {
 
         switch (car.getDrivingDirection()) {
             case EAST:
-                next = xapHelper.takeRoxelById(roxel.getEast());
+                next = xapHelper.getRoxelById(roxel.getEast());
                 break;
             case SOUTH:
-                next = xapHelper.takeRoxelById(roxel.getSouth());
+                next = xapHelper.getRoxelById(roxel.getSouth());
                 break;
             case NORTH:
-                next = xapHelper.takeRoxelById(roxel.getNorth());
+                next = xapHelper.getRoxelById(roxel.getNorth());
                 break;
             case WEST:
-                next = xapHelper.takeRoxelById(roxel.getWest());
+                next = xapHelper.getRoxelById(roxel.getWest());
                 break;
             default:
-                next = roxel;
+                next = null;
                 break;
         }
-        if (next != null) {
-            return next;
-        }
-
-        return roxel;
+        return next;
     }
 
     @Override
