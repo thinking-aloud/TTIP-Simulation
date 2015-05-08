@@ -2,7 +2,6 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
-import domain.TrafficLight;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.Image;

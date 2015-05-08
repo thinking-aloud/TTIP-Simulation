@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package domain;
+package helper;
 
+import domain.Car;
+import domain.Roxel;
 import helper.XapHelper;
 
 /**
