@@ -2,6 +2,7 @@ package gui;
 
 import helper.CarContainer;
 import domain.Car;
+import domain.Roxel;
 import helper.XapHelper;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -10,6 +11,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.TiledMap;
 
@@ -19,13 +21,12 @@ public class Main extends BasicGame {
     static final int FPS = 60;
     static final int SPEED = 1000; // sleep between updates (0=fastest)
     private final XapHelper xapHelper;
-    private final ArrayList<CarContainer> carContainers;
     private final ArrayList<Thread> carContainerThreads;
+    private static Image arrow;
 
     public Main(String gamename) {
         super(gamename);
         xapHelper = new XapHelper();
-        this.carContainers = new ArrayList();
         this.carContainerThreads = new ArrayList();
     }
 
@@ -37,10 +38,10 @@ public class Main extends BasicGame {
         xapHelper.initRoxels(mapWidth, mapHeight);
         xapHelper.initCars(mapWidth, mapHeight, SPEED);
         Car cars[] = xapHelper.getCars();
+        arrow = new Image("res/arrow.png");
 
         for (Car car : cars) {
             CarContainer cc = new CarContainer(car);
-            carContainers.add(cc);
             carContainerThreads.add(new Thread(cc));
         }
 
@@ -56,15 +57,29 @@ public class Main extends BasicGame {
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
-
-        for (CarContainer container : carContainers) {
-            Integer x = container.getX();
-            Integer y = container.getY();
-
-            if (x != null && y != null) {
-                container.getImage().draw(x, y);
+        
+        for(Roxel roxel : xapHelper.getAllRoxels()) {
+            if(roxel.isJunction()) {
+                if(roxel.getOpenDirection() == Car.DrivingDirection.SOUTH) {
+                    arrow.rotate(90);
+                    arrow.draw(roxel.getX() * 64 + 16, roxel.getY() * 64 + 16);
+                    arrow.rotate(-90);
+                } else {
+                    arrow.draw(roxel.getX() * 64 + 16, roxel.getY() * 64 + 16);
+                }
             }
         }
+
+        for (Car car : xapHelper.getCars()) {
+            CarContainer cc = new CarContainer(car);
+            Integer x = cc.getX();
+            Integer y = cc.getY();
+
+            if (x != null && y != null) {
+                cc.getImage().draw(x, y);
+            }
+        }
+        
     }
 
     public static void main(String[] args) {

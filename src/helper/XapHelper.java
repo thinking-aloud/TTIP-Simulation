@@ -34,7 +34,6 @@ public class XapHelper {
         // include connection between neighbours
         Roxel template = new Roxel();
         Roxel roxes[] = gigaSpace.readMultiple(template);
-        System.out.println("Roxes: " + roxes.length + " " + Arrays.toString(roxes));
         for (Roxel rox : roxes) {
             // Default
             Roxel north = gigaSpace.read(new Roxel(rox.getX(), rox.getY() - 1));
@@ -93,6 +92,12 @@ public class XapHelper {
                 car.setOccupiedRoxel(rox);
                 gigaSpace.write(car);
             }
+            rox = getRoxelByCoordinates(3, row);
+            if (rox != null) {
+                Car car = new Car(Car.DrivingDirection.EAST, speed);
+                car.setOccupiedRoxel(rox);
+                gigaSpace.write(car);
+            }
         }
         // Vertical
         for (int column = 0; column < mapWidth; column++) {
@@ -131,6 +136,10 @@ public class XapHelper {
 
     public Roxel takeRoxelById(String id) {
         return gigaSpace.take(new Roxel(id));
+    }
+    
+    public Roxel[] getAllRoxels() {
+        return gigaSpace.readMultiple(new Roxel());
     }
 
     public Car[] getCars() throws SlickException {
