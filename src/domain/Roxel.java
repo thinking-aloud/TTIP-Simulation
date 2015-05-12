@@ -10,11 +10,13 @@ public class Roxel implements Serializable {
     private String id, north, east, south, west;
     private Integer x, y;
     private Car.DrivingDirection openDirection;
-    
+    private Boolean occupied;
+
     public Roxel(Integer x, Integer y) {
         this.x = x;
         this.y = y;
         this.id = String.format("%03d-%03d", x, y);
+        this.occupied = Boolean.FALSE;
     }
 
     // constructor for Gigaspaces querying
@@ -104,13 +106,13 @@ public class Roxel implements Serializable {
      */
     @Override
     public String toString() {
-        return "Roxel #" + getId() + ", Position: " + getX() + ", " + getY();
+        return "Roxel #" + id + ", Position: " + x + ", " + y;
     }
 
     /**
      * @return the x
      */
-    @SpaceIndex(type=SpaceIndexType.EXTENDED)
+    @SpaceIndex(type = SpaceIndexType.EXTENDED)
     public Integer getX() {
         return x;
     }
@@ -118,7 +120,7 @@ public class Roxel implements Serializable {
     /**
      * @return the y
      */
-    @SpaceIndex(type=SpaceIndexType.EXTENDED)
+    @SpaceIndex(type = SpaceIndexType.EXTENDED)
     public Integer getY() {
         return y;
     }
@@ -150,8 +152,17 @@ public class Roxel implements Serializable {
     public void setOpenDirection(Car.DrivingDirection openDirection) {
         this.openDirection = openDirection;
     }
-    
+
     public boolean isJunction() {
         return (this.north != null && this.east != null && this.south != null && this.west != null);
     }
+
+    public Boolean isOccupied() {
+        return occupied;
+    }
+
+    public void setOccupied(Boolean occupied) {
+        this.occupied = occupied;
+    }
+
 }

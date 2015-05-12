@@ -2,8 +2,8 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
-import java.util.Arrays;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Point;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.GigaSpaceConfigurer;
 import org.openspaces.core.space.SpaceProxyConfigurer;
@@ -12,6 +12,11 @@ public class XapHelper {
 
     private final SpaceProxyConfigurer configurer;
     private final GigaSpace gigaSpace;
+
+    // you get 2/3 (x mod 3 != 1) cars. No cars on intersections
+    // 0 = no cars, 1-2 = one car, 3 = 2 cars, 4 = 3 cars
+    private final int horizontalCarRows = 1;
+    private final int verticalCarRows = 1;
 
     public XapHelper() {
         configurer = new SpaceProxyConfigurer("myGrid");
@@ -33,8 +38,8 @@ public class XapHelper {
 
         // include connection between neighbours
         Roxel template = new Roxel();
-        Roxel roxes[] = gigaSpace.readMultiple(template);
-        for (Roxel rox : roxes) {
+        Roxel roxels[] = gigaSpace.readMultiple(template);
+        for (Roxel rox : roxels) {
             // Default
             Roxel north = gigaSpace.read(new Roxel(rox.getX(), rox.getY() - 1));
             Roxel east = gigaSpace.read(new Roxel(rox.getX() + 1, rox.getY()));
@@ -79,83 +84,72 @@ public class XapHelper {
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
         // Horizontal
         for (int row = 0; row < mapHeight; row++) {
-            Roxel rox = getRoxelByCoordinates(0, row);
-            if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.EAST, speed);
-                car.setOccupiedRoxel(rox);
-                gigaSpace.write(car);
-            }
-            // MORE CARS!!!
-            rox = getRoxelByCoordinates(2, row);
-            if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.EAST, speed);
-                car.setOccupiedRoxel(rox);
-                gigaSpace.write(car);
-            }
-            rox = getRoxelByCoordinates(3, row);
-            if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.EAST, speed);
-                car.setOccupiedRoxel(rox);
-                gigaSpace.write(car);
+            for (int column = 0; column < horizontalCarRows; column++) {
+                if (column % 3 != 1) {
+                    Roxel rox = readRoxel(new Roxel(column, row));
+                    if (rox != null) {
+                        // place car
+                        Car car = new Car(Car.DrivingDirection.EAST, speed);
+                        car.setPosition(new Point(rox.getX(), rox.getY()));
+                        gigaSpace.write(car);
+
+                        // occupy roxel
+                        Roxel roxel = takeRoxel(new Roxel(rox.getX(), rox.getY()));
+                        roxel.setOccupied(true);
+                        gigaSpace.write(roxel);
+                    }
+                }
             }
         }
+
         // Vertical
         for (int column = 0; column < mapWidth; column++) {
-            Roxel rox = getRoxelByCoordinates(column, 0);
-            if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.SOUTH, speed);
-                car.setOccupiedRoxel(rox);
-                gigaSpace.write(car);
-            }
-            // MORE CARS!!!
-            rox = getRoxelByCoordinates(column, 2);
-            if (rox != null) {
-                Car car = new Car(Car.DrivingDirection.SOUTH, speed);
-                car.setOccupiedRoxel(rox);
-                gigaSpace.write(car);
+            for (int row = 0; row < verticalCarRows; row++) {
+                if (row % 3 != 1) {
+                    Roxel rox = readRoxel(new Roxel(column, row));
+                    if (rox != null) {
+                        // place car
+                        Car car = new Car(Car.DrivingDirection.SOUTH, speed);
+                        car.setPosition(new Point(rox.getX(), rox.getY()));
+                        gigaSpace.write(car);
+
+                        // occupy roxel
+                        Roxel roxel = takeRoxel(new Roxel(rox.getX(), rox.getY()));
+                        roxel.setOccupied(true);
+                        gigaSpace.write(roxel);
+                    }
+                }
             }
         }
-    }
 
-    public void releaseRoxel(Roxel rox) {
-        if (rox != null) {
-            gigaSpace.write(rox);
-        }
     }
-
-    public Roxel getRoxelByCoordinates(int x, int y) {
-        Roxel template = new Roxel();
-        template.setX(x);
-        template.setY(y);
+    
+    public Roxel takeRoxel(Roxel template) {
+        return gigaSpace.take(template);
+    }
+    
+    public Roxel readRoxel(Roxel template) {
         return gigaSpace.read(template);
     }
 
-    public Roxel getRoxelById(String id) {
-        return gigaSpace.read(new Roxel(id));
-    }
-
-    public Roxel takeRoxelById(String id) {
-        return gigaSpace.take(new Roxel(id));
-    }
-    
-    public Roxel[] getAllRoxels() {
+    public Roxel[] readAllRoxels() {
         return gigaSpace.readMultiple(new Roxel());
     }
 
-    public Car[] getCars() throws SlickException {
+    public Car[] readAllCars() {
         return gigaSpace.readMultiple(new Car());
     }
 
-    public void updateCar(Car car) {
-        gigaSpace.write(car);
+    public <T> void writeToTupelspace(T object) {
+        gigaSpace.write(object);
     }
 
-    public boolean isGreen(Roxel rox, Car.DrivingDirection dir) {
-        return (rox.getOpenDirection() == dir);
+    public boolean isGreen(Roxel roxel, Car.DrivingDirection direction) {
+        return (roxel.getOpenDirection() == direction);
     }
 
-    public void passRoxelToTrafficLight(Roxel oldRoxel) {
-        Thread tl = new Thread(new TrafficLight(oldRoxel));
+    public void passRoxelToTrafficLight(Roxel roxel) {
+        Thread tl = new Thread(new TrafficLight(roxel));
         tl.start();
     }
 }

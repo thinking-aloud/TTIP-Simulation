@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Point;
 
 public class CarContainer implements Runnable {
 
@@ -17,6 +18,7 @@ public class CarContainer implements Runnable {
     private static final int verticalOffsetX = 10;
     private static final int verticalOffsetY = 23;
     private static final int tileSize = 64;
+    private static final boolean trafficControl = false;
 
     private final XapHelper xapHelper;
 
@@ -36,17 +38,40 @@ public class CarContainer implements Runnable {
     // public methods
     //
     public void move() {
-        Roxel next = getNextRoxel();
-        if (next != null && xapHelper.isGreen(next, this.car.getDrivingDirection())) {
-            next = xapHelper.takeRoxelById(next.getId());
-            Roxel oldRoxel = car.getOccupiedRoxel();
-            car.setOccupiedRoxel(next);
-            xapHelper.updateCar(car);
-            if (oldRoxel.isJunction()) {
-                xapHelper.passRoxelToTrafficLight(oldRoxel);
-            } else {
-                xapHelper.releaseRoxel(oldRoxel);
+        Roxel template = new Roxel((int) car.getPosition().getX(), (int) car.getPosition().getY());
+        template.setOccupied(true);
+        Roxel currentRoxel = xapHelper.takeRoxel(template);
+        
+        if (currentRoxel != null) {
+            Roxel nextRoxel = takeNextRoxel(currentRoxel);
+
+            if (nextRoxel != null 
+                    && !nextRoxel.isOccupied() 
+                    && xapHelper.isGreen(nextRoxel, this.car.getDrivingDirection())) {
+                
+                // set next roxel occupied
+                nextRoxel.setOccupied(true);
+                xapHelper.writeToTupelspace(nextRoxel);
+
+                // move car
+                car.setPosition(new Point((int) nextRoxel.getX(), (int) nextRoxel.getY()));
+                xapHelper.writeToTupelspace(car);
+
+                // pass old roxel to trafficLight or TS
+                currentRoxel.setOccupied(false);
             }
+
+            // traffic is not working correctly. Cars go through the map just once.
+            if (trafficControl) {
+                if (currentRoxel.isJunction()) {
+                    xapHelper.passRoxelToTrafficLight(currentRoxel);
+                } else {
+                    xapHelper.writeToTupelspace(currentRoxel);
+                }
+            } else {
+                xapHelper.writeToTupelspace(currentRoxel);
+            }
+
         }
     }
 
@@ -55,63 +80,38 @@ public class CarContainer implements Runnable {
     }
 
     // returns the position of the car in pixels
-    public Integer getX() {
-        Roxel roxel = car.getOccupiedRoxel();
+    public Point getPosition() {
+        Point position = car.getPosition();
 
-        if (roxel == null) {
+        if (position == null) {
             return null;
         }
 
-        int x = roxel.getX() * tileSize;
+        float x = position.getX() * tileSize;
         if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
             x += horizontalOffsetX;
         } else {
             x += verticalOffsetX;
         }
-        return x;
-    }
 
-    public Integer getY() {
-        Roxel roxel = car.getOccupiedRoxel();
-
-        if (roxel == null) {
-            return null;
-        }
-
-        int y = roxel.getY() * tileSize;
+        float y = position.getY() * tileSize;
         if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
             y += horizontalOffsetY;
         } else {
             y += verticalOffsetY;
         }
-        return y;
+
+        return new Point(x, y);
     }
 
-    //
-    // private methods
-    //
-    private Roxel getNextRoxel() {
-        Roxel next;
-        Roxel roxel = car.getOccupiedRoxel();
-
+    private Roxel takeNextRoxel(Roxel currentRoxel) {
         switch (car.getDrivingDirection()) {
             case EAST:
-                next = xapHelper.getRoxelById(roxel.getEast());
-                break;
+                return xapHelper.takeRoxel(new Roxel(currentRoxel.getEast()));
             case SOUTH:
-                next = xapHelper.getRoxelById(roxel.getSouth());
-                break;
-            case NORTH:
-                next = xapHelper.getRoxelById(roxel.getNorth());
-                break;
-            case WEST:
-                next = xapHelper.getRoxelById(roxel.getWest());
-                break;
-            default:
-                next = null;
-                break;
+                return xapHelper.takeRoxel(new Roxel(currentRoxel.getSouth()));
         }
-        return next;
+        return null;
     }
 
     @Override

@@ -37,7 +37,7 @@ public class Main extends BasicGame {
         int mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
         xapHelper.initCars(mapWidth, mapHeight, SPEED);
-        Car cars[] = xapHelper.getCars();
+        Car cars[] = xapHelper.readAllCars();
         arrow = new Image("res/arrow.png");
 
         for (Car car : cars) {
@@ -57,10 +57,10 @@ public class Main extends BasicGame {
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         tiledMap.render(0, 0);
-        
-        for(Roxel roxel : xapHelper.getAllRoxels()) {
-            if(roxel.isJunction()) {
-                if(roxel.getOpenDirection() == Car.DrivingDirection.SOUTH) {
+
+        for (Roxel roxel : xapHelper.readAllRoxels()) {
+            if (roxel.isJunction()) {
+                if (roxel.getOpenDirection() == Car.DrivingDirection.SOUTH) {
                     arrow.rotate(90);
                     arrow.draw(roxel.getX() * 64 + 16, roxel.getY() * 64 + 16);
                     arrow.rotate(-90);
@@ -70,16 +70,14 @@ public class Main extends BasicGame {
             }
         }
 
-        for (Car car : xapHelper.getCars()) {
+        for (Car car : xapHelper.readAllCars()) {
             CarContainer cc = new CarContainer(car);
-            Integer x = cc.getX();
-            Integer y = cc.getY();
+            float x = cc.getPosition().getX();
+            float y = cc.getPosition().getY();
 
-            if (x != null && y != null) {
-                cc.getImage().draw(x, y);
-            }
+            cc.getImage().draw(x, y);
         }
-        
+
     }
 
     public static void main(String[] args) {

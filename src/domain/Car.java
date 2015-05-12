@@ -1,21 +1,21 @@
 package domain;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
+import org.newdawn.slick.geom.Point;
 
 public class Car {
 
     public enum DrivingDirection {
 
-        WEST,
         EAST,
-        NORTH,
         SOUTH
     }
 
     private String id;
     private DrivingDirection drivingDirection;
-    private Roxel occupiedRoxel;
+//    private Roxel occupiedRoxel;
     private Integer speed;
+    private Point position;
 
     public Car(DrivingDirection dir, Integer speed) {
         this.drivingDirection = dir;
@@ -57,14 +57,13 @@ public class Car {
         this.drivingDirection = drivingDirection;
     }
 
-    public Roxel getOccupiedRoxel() {
-        return occupiedRoxel;
-    }
-
-    public void setOccupiedRoxel(Roxel occupiedRoxel) {
-        this.occupiedRoxel = occupiedRoxel;
-    }
-
+//    public Roxel getOccupiedRoxel() {
+//        return occupiedRoxel;
+//    }
+//
+//    public void setOccupiedRoxel(Roxel occupiedRoxel) {
+//        this.occupiedRoxel = occupiedRoxel;
+//    }
     public Integer getSpeed() {
         return speed;
     }
@@ -72,5 +71,13 @@ public class Car {
     public void setSpeed(Integer speed) {
         this.speed = speed;
     }
-    
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
 }
