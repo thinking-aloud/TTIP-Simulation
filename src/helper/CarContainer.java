@@ -18,7 +18,7 @@ public class CarContainer implements Runnable {
     private static final int verticalOffsetX = 10;
     private static final int verticalOffsetY = 23;
     private static final int tileSize = 64;
-    private static final boolean trafficControl = false;
+    private static final boolean trafficControl = true;
 
     private final XapHelper xapHelper;
 
@@ -41,24 +41,25 @@ public class CarContainer implements Runnable {
         Roxel template = new Roxel((int) car.getPosition().getX(), (int) car.getPosition().getY());
         template.setOccupied(true);
         Roxel currentRoxel = xapHelper.takeRoxel(template);
-        
+
         if (currentRoxel != null) {
             Roxel nextRoxel = takeNextRoxel(currentRoxel);
 
-            if (nextRoxel != null 
-                    && !nextRoxel.isOccupied() 
-                    && xapHelper.isGreen(nextRoxel, this.car.getDrivingDirection())) {
-                
-                // set next roxel occupied
-                nextRoxel.setOccupied(true);
+            if (nextRoxel != null) {
+                if (!nextRoxel.isOccupied()
+                        && xapHelper.isGreen(nextRoxel, this.car.getDrivingDirection())) {
+
+                    // set next roxel occupied
+                    nextRoxel.setOccupied(true);
+
+                    // move car
+                    car.setPosition(new Point((int) nextRoxel.getX(), (int) nextRoxel.getY()));
+                    xapHelper.writeToTupelspace(car);
+
+                    // pass old roxel to trafficLight or TS
+                    currentRoxel.setOccupied(false);
+                }
                 xapHelper.writeToTupelspace(nextRoxel);
-
-                // move car
-                car.setPosition(new Point((int) nextRoxel.getX(), (int) nextRoxel.getY()));
-                xapHelper.writeToTupelspace(car);
-
-                // pass old roxel to trafficLight or TS
-                currentRoxel.setOccupied(false);
             }
 
             // traffic is not working correctly. Cars go through the map just once.
