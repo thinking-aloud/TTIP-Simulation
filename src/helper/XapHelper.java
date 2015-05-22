@@ -25,6 +25,7 @@ public class XapHelper {
     }
 
     public void initRoxels(int mapWidth, int mapHeight) {
+        // clears gigaspaces on startup
         gigaSpace.clear(null);
 
         // initialize street fields
@@ -59,19 +60,24 @@ public class XapHelper {
                 west = gigaSpace.read(new Roxel(mapWidth - 1, rox.getY()));
             }
             if (north != null) {
-                rox.setNorth(north.getId());
+                rox.setNorth(new Point(north.getX(), north.getY()));
             }
             if (east != null) {
-                rox.setEast(east.getId());
+                rox.setEast(new Point(east.getX(), east.getY()));
             }
             if (south != null) {
-                rox.setSouth(south.getId());
+                rox.setSouth(new Point(south.getX(), south.getY()));
             }
             if (west != null) {
-                rox.setWest(west.getId());
+                rox.setWest(new Point(west.getX(), west.getY()));
             }
             if (rox.isJunction()) {
-                rox.setOpenDirection(Car.DrivingDirection.EAST);
+                rox.setOpenDirection(Car.DrivingDirection.TODECIDE);
+
+                // creates a traffic light thread
+                Thread tl = new Thread(new TrafficLight(rox.getX(), rox.getY()));
+                tl.start();
+
             } else if (rox.getNorth() != null && rox.getSouth() != null) {
                 rox.setOpenDirection(Car.DrivingDirection.SOUTH);
             } else if (rox.getEast() != null && rox.getWest() != null) {
@@ -82,21 +88,28 @@ public class XapHelper {
     }
 
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
+
         // Horizontal
         for (int row = 0; row < mapHeight; row++) {
             for (int column = 0; column < horizontalCarRows; column++) {
-                if (column % 3 != 1) {
+                
+                if (row % 3 == 1 && column % 3 != 1) {
                     Roxel rox = readRoxel(new Roxel(column, row));
-                    if (rox != null) {
-                        // place car
-                        Car car = new Car(Car.DrivingDirection.EAST, speed);
-                        car.setPosition(new Point(rox.getX(), rox.getY()));
-                        gigaSpace.write(car);
 
+                    if (rox != null) {
                         // occupy roxel
                         Roxel roxel = takeRoxel(new Roxel(rox.getX(), rox.getY()));
-                        roxel.setOccupied(true);
-                        gigaSpace.write(roxel);
+
+                        if (roxel != null) {
+                            roxel.setOccupied(true);
+                            gigaSpace.write(roxel);
+
+                            // place car
+                            Car car = new Car(Car.DrivingDirection.EAST, speed);
+                            car.setX(rox.getX());
+                            car.setY(rox.getY());
+                            gigaSpace.write(car);
+                        }
                     }
                 }
             }
@@ -105,29 +118,41 @@ public class XapHelper {
         // Vertical
         for (int column = 0; column < mapWidth; column++) {
             for (int row = 0; row < verticalCarRows; row++) {
-                if (row % 3 != 1) {
-                    Roxel rox = readRoxel(new Roxel(column, row));
-                    if (rox != null) {
-                        // place car
-                        Car car = new Car(Car.DrivingDirection.SOUTH, speed);
-                        car.setPosition(new Point(rox.getX(), rox.getY()));
-                        gigaSpace.write(car);
 
+                if (column % 3 == 1 && row % 3 != 1) {
+                    Roxel rox = readRoxel(new Roxel(column, row));
+
+                    if (rox != null) {
                         // occupy roxel
                         Roxel roxel = takeRoxel(new Roxel(rox.getX(), rox.getY()));
-                        roxel.setOccupied(true);
-                        gigaSpace.write(roxel);
+
+                        if (roxel != null) {
+                            roxel.setOccupied(true);
+                            gigaSpace.write(roxel);
+
+                            // place car
+                            Car car = new Car(Car.DrivingDirection.SOUTH, speed);
+                            car.setX(rox.getX());
+                            car.setY(rox.getY());
+                            gigaSpace.write(car);
+                        }
+                    } else {
+                        System.out.println("rox " + column + ", " + row + " is null!");
                     }
                 }
             }
         }
+        System.out.println("Number of cars: " + gigaSpace.count(new Car()));
+    }
+
+    public void initIntersections() {
 
     }
-    
+
     public Roxel takeRoxel(Roxel template) {
         return gigaSpace.take(template);
     }
-    
+
     public Roxel readRoxel(Roxel template) {
         return gigaSpace.read(template);
     }
@@ -145,11 +170,11 @@ public class XapHelper {
     }
 
     public boolean isGreen(Roxel roxel, Car.DrivingDirection direction) {
-        return (roxel.getOpenDirection() == direction);
+        return (!roxel.getOpenDirection().equals(Car.DrivingDirection.TODECIDE) && roxel.getOpenDirection() == direction);
     }
 
-    public void passRoxelToTrafficLight(Roxel roxel) {
-        Thread tl = new Thread(new TrafficLight(roxel));
-        tl.start();
-    }
+//    public void passRoxelToTrafficLight(Roxel roxel) {
+//        Thread tl = new Thread(new TrafficLight(roxel));
+//        tl.start();
+//    }
 }

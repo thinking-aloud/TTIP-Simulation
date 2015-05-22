@@ -26,11 +26,16 @@ public class CarContainer implements Runnable {
         this.car = car;
         this.xapHelper = new XapHelper();
 
-        if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
-            image = new Image("res/car_red.png");
-        } else {
-            image = new Image("res/car_blue.png");
-            image.rotate(90);
+        switch (car.getDrivingDirection()) {
+            case EAST:
+                image = new Image("res/car_red.png");
+                break;
+            case SOUTH:
+                image = new Image("res/car_blue.png");
+                image.rotate(90);
+                break;
+            default:
+                image = new Image("res/car_red.png");
         }
     }
 
@@ -38,42 +43,38 @@ public class CarContainer implements Runnable {
     // public methods
     //
     public void move() {
-        Roxel template = new Roxel((int) car.getPosition().getX(), (int) car.getPosition().getY());
-        template.setOccupied(true);
-        Roxel currentRoxel = xapHelper.takeRoxel(template);
-
-        if (currentRoxel != null) {
-            Roxel nextRoxel = takeNextRoxel(currentRoxel);
-
-            if (nextRoxel != null) {
-                if (!nextRoxel.isOccupied()
-                        && xapHelper.isGreen(nextRoxel, this.car.getDrivingDirection())) {
-
-                    // set next roxel occupied
-                    nextRoxel.setOccupied(true);
-
-                    // move car
-                    car.setPosition(new Point((int) nextRoxel.getX(), (int) nextRoxel.getY()));
-                    xapHelper.writeToTupelspace(car);
-
-                    // pass old roxel to trafficLight or TS
-                    currentRoxel.setOccupied(false);
-                }
-                xapHelper.writeToTupelspace(nextRoxel);
-            }
-
-            // traffic is not working correctly. Cars go through the map just once.
-            if (trafficControl) {
-                if (currentRoxel.isJunction()) {
-                    xapHelper.passRoxelToTrafficLight(currentRoxel);
-                } else {
-                    xapHelper.writeToTupelspace(currentRoxel);
-                }
-            } else {
-                xapHelper.writeToTupelspace(currentRoxel);
-            }
-
-        }
+//        Roxel template = new Roxel((int) car.getX(), (int) car.getY());
+//        template.setOccupied(true);
+//        Roxel currentRoxel = xapHelper.takeRoxel(template);
+//
+//        if (currentRoxel != null) {
+//            Roxel nextRoxel = takeNextRoxel(currentRoxel);
+//
+//            if (nextRoxel != null) {
+//                if (!nextRoxel.isOccupied()
+//                        && xapHelper.isGreen(nextRoxel, car.getDrivingDirection())) {
+//
+//                    // set next roxel occupied
+//                    nextRoxel.setOccupied(true);
+//
+//                    // move car
+//                    car.setX(nextRoxel.getX());
+//                    car.setY(nextRoxel.getY());
+//                    xapHelper.writeToTupelspace(car);
+//
+//                    // pass old roxel to trafficLight or TS
+//                    currentRoxel.setOccupied(false);
+//                }
+//                xapHelper.writeToTupelspace(nextRoxel);
+//            }
+//
+//            // passes the Roxel to the traffic process
+//            if (trafficControl && currentRoxel.isJunction()) {
+////                xapHelper.passRoxelToTrafficLight(currentRoxel);
+//                currentRoxel.setOpenDirection(Car.DrivingDirection.TODECIDE);
+//            }
+//            xapHelper.writeToTupelspace(currentRoxel);
+//        }
     }
 
     public Image getImage() {
@@ -82,24 +83,16 @@ public class CarContainer implements Runnable {
 
     // returns the position of the car in pixels
     public Point getPosition() {
-        Point position = car.getPosition();
-
-        if (position == null) {
-            return null;
-        }
-
-        float x = position.getX() * tileSize;
-        if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
-            x += horizontalOffsetX;
-        } else {
-            x += verticalOffsetX;
-        }
-
-        float y = position.getY() * tileSize;
-        if (car.getDrivingDirection() == Car.DrivingDirection.EAST) {
-            y += horizontalOffsetY;
-        } else {
-            y += verticalOffsetY;
+        float x = car.getX() * tileSize;
+        float y = car.getY() * tileSize;
+        switch (car.getDrivingDirection()) {
+            case EAST:
+                x += horizontalOffsetX;
+                y += horizontalOffsetY;
+                break;
+            case SOUTH:
+                x += verticalOffsetX;
+                y += verticalOffsetY;
         }
 
         return new Point(x, y);
@@ -108,9 +101,11 @@ public class CarContainer implements Runnable {
     private Roxel takeNextRoxel(Roxel currentRoxel) {
         switch (car.getDrivingDirection()) {
             case EAST:
-                return xapHelper.takeRoxel(new Roxel(currentRoxel.getEast()));
+                Roxel template = new Roxel((int) currentRoxel.getEast().getX(), (int) currentRoxel.getEast().getY());
+                return xapHelper.takeRoxel(template);
             case SOUTH:
-                return xapHelper.takeRoxel(new Roxel(currentRoxel.getSouth()));
+                Roxel template2 = new Roxel((int) currentRoxel.getSouth().getX(), (int) currentRoxel.getSouth().getY());
+                return xapHelper.takeRoxel(template2);
         }
         return null;
     }

@@ -23,6 +23,8 @@ public class Main extends BasicGame {
     private final XapHelper xapHelper;
     private final ArrayList<Thread> carContainerThreads;
     private static Image arrow;
+    public static int mapHeight;
+    public static int mapWidth;
 
     public Main(String gamename) {
         super(gamename);
@@ -33,8 +35,8 @@ public class Main extends BasicGame {
     @Override
     public void init(GameContainer gc) throws SlickException {
         tiledMap = new TiledMap("res/streetgrid.tmx");
-        int mapHeight = tiledMap.getHeight();
-        int mapWidth = tiledMap.getWidth();
+        mapHeight = tiledMap.getHeight();
+        mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
         xapHelper.initCars(mapWidth, mapHeight, SPEED);
         Car cars[] = xapHelper.readAllCars();
@@ -52,6 +54,7 @@ public class Main extends BasicGame {
 
     @Override
     public void update(GameContainer gc, int delta) throws SlickException {
+        // not used due to thread usage
     }
 
     @Override
