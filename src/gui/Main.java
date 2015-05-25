@@ -22,7 +22,7 @@ public class Main extends BasicGame {
     static final int SPEED = 1000; // sleep between updates (0=fastest)
     private final XapHelper xapHelper;
     private final ArrayList<Thread> carContainerThreads;
-    private static Image arrow;
+    private static Image arrow, questionMark;
     public static int mapHeight;
     public static int mapWidth;
 
@@ -39,16 +39,16 @@ public class Main extends BasicGame {
         mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
         xapHelper.initCars(mapWidth, mapHeight, SPEED);
+
         Car cars[] = xapHelper.readAllCars();
         arrow = new Image("res/arrow.png");
+        questionMark = new Image("res/question-mark.png");
 
         for (Car car : cars) {
             CarContainer cc = new CarContainer(car);
-            carContainerThreads.add(new Thread(cc));
-        }
-
-        for (Thread t : carContainerThreads) {
-            t.start();
+            Thread thread = new Thread(cc);
+            thread.start();
+            carContainerThreads.add(thread);
         }
     }
 
@@ -63,12 +63,14 @@ public class Main extends BasicGame {
 
         for (Roxel roxel : xapHelper.readAllRoxels()) {
             if (roxel.isJunction()) {
-                if (roxel.getOpenDirection() == Car.DrivingDirection.SOUTH) {
+                if (roxel.getOpenDirection() == Car.Direction.SOUTH) {
                     arrow.rotate(90);
                     arrow.draw(roxel.getX() * 64 + 16, roxel.getY() * 64 + 16);
                     arrow.rotate(-90);
-                } else {
+                } else if (roxel.getOpenDirection() == Car.Direction.EAST) {
                     arrow.draw(roxel.getX() * 64 + 16, roxel.getY() * 64 + 16);
+                } else {
+                    questionMark.draw(roxel.getX() * 64 + 22, roxel.getY() * 64 + 16);
                 }
             }
         }

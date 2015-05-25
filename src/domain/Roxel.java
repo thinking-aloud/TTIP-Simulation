@@ -1,33 +1,35 @@
 package domain;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
-import gui.Main;
 import java.io.Serializable;
-import org.newdawn.slick.geom.Point;
 
 public class Roxel implements Serializable {
 
     private String id;
     private Integer x, y;
-    private Point north, east, south, west;
-    private Car.DrivingDirection openDirection;
-    private Boolean occupied;
+    private Car.Direction openDirection;
+    private Boolean occupied, junction;
 
     // constructor for Gigaspaces querying
     public Roxel() {
         this.occupied = Boolean.FALSE;
-        this.openDirection = Car.DrivingDirection.EAST;
     }
 
     public Roxel(Integer x, Integer y) {
         this();
         this.x = x;
         this.y = y;
+        
+        this.junction = this.junction = x % 3 == 1 && y % 3 == 1;
     }
 
-    public Roxel(Integer x, Integer y, Car.DrivingDirection direction) {
+    public Roxel(Integer x, Integer y, Car.Direction direction) {
         this(x, y);
         this.openDirection = direction;
+    }
+
+    public Roxel(Integer x, Integer y, Car.Direction direction, Boolean junction) {
+        this(x, y, direction);
     }
 
     /**
@@ -45,62 +47,6 @@ public class Roxel implements Serializable {
      */
     public void setId(String id) {
         this.id = id;
-    }
-
-    /**
-     * @return the north
-     */
-    public Point getNorth() {
-        return north;
-    }
-
-    /**
-     * @param north the north to set
-     */
-    public void setNorth(Point north) {
-        this.north = north;
-    }
-
-    /**
-     * @return the east
-     */
-    public Point getEast() {
-        return east;
-    }
-
-    /**
-     * @param east the east to set
-     */
-    public void setEast(Point east) {
-        this.east = east;
-    }
-
-    /**
-     * @return the south
-     */
-    public Point getSouth() {
-        return south;
-    }
-
-    /**
-     * @param south the south to set
-     */
-    public void setSouth(Point south) {
-        this.south = south;
-    }
-
-    /**
-     * @return the west
-     */
-    public Point getWest() {
-        return west;
-    }
-
-    /**
-     * @param west the west to set
-     */
-    public void setWest(Point west) {
-        this.west = west;
     }
 
     /**
@@ -131,20 +77,15 @@ public class Roxel implements Serializable {
     /**
      * @return the openDirection
      */
-    public Car.DrivingDirection getOpenDirection() {
+    public Car.Direction getOpenDirection() {
         return openDirection;
     }
 
     /**
      * @param openDirection the openDirection to set
      */
-    public void setOpenDirection(Car.DrivingDirection openDirection) {
+    public void setOpenDirection(Car.Direction openDirection) {
         this.openDirection = openDirection;
-    }
-
-    public boolean isJunction() {
-//        return (this.north != null && this.east != null && this.south != null && this.west != null);
-        return(Main.mapWidth % 3 == 1 && Main.mapHeight % 3 == 1);
     }
 
     public Boolean isOccupied() {
@@ -157,6 +98,14 @@ public class Roxel implements Serializable {
 
     public Boolean getOccupied() {
         return occupied;
+    }
+
+    public Boolean isJunction() {
+        return junction;
+    }
+
+    public void setJunction(Boolean junction) {
+        this.junction = junction;
     }
 
 }
