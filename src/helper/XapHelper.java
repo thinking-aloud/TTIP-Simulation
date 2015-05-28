@@ -1,12 +1,15 @@
 package helper;
 
-import domain.TrafficLight;
 import domain.Car;
 import domain.Roxel;
+import java.util.Random;
 import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.GigaSpaceConfigurer;
 import org.openspaces.core.space.SpaceProxyConfigurer;
+import org.openspaces.events.notify.SimpleNotifyContainerConfigurer;
+import org.openspaces.events.notify.SimpleNotifyEventListenerContainer;
+import trafficlight.TrafficLightProcessor;
 
 public class XapHelper {
 
@@ -19,7 +22,7 @@ public class XapHelper {
     private final int verticalCarRows = 3;
 
     public XapHelper() {
-        configurer = new SpaceProxyConfigurer("myGrid");
+        configurer = new SpaceProxyConfigurer("eventSpace");
         configurer.lookupGroups("gigaspaces-10.1.0-XAPPremium-ga");
         gigaSpace = new GigaSpaceConfigurer(configurer).create();
     }
@@ -36,11 +39,18 @@ public class XapHelper {
                     Roxel roxel = new Roxel(i, j);
 
                     if (roxel.isJunction()) {
-                        roxel.setOpenDirection(Car.Direction.TODECIDE);
+                        // Set random Direction for Junction
+                        int dir = new Random().nextInt(2);
+                        if (dir == 1) {
+                            roxel.setOpenDirection(Car.Direction.EAST);
+                        } else {
+                            roxel.setOpenDirection(Car.Direction.SOUTH);
+                        }
+                        // roxel.setOpenDirection(Car.Direction.TODECIDE);
 
                         // creates a traffic light thread
-                        Thread tl = new Thread(new TrafficLight(i, j));
-                        tl.start();
+                        /*Thread tl = new Thread(new TrafficLight(i, j));
+                        tl.start();*/
                     } else if (i % 3 != 1 && j % 3 == 1) {
                         roxel.setOpenDirection(Car.Direction.EAST);
                     } else if (i % 3 == 1 && j % 3 != 1) {
@@ -50,6 +60,13 @@ public class XapHelper {
                 }
             }
         }
+    }
+    
+    public void initTrafficLights() {
+        SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(gigaSpace)
+                .eventListenerAnnotation(new TrafficLightProcessor(gigaSpace))
+                .notifyContainer();
+        nelc.start();
     }
 
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
@@ -106,10 +123,6 @@ public class XapHelper {
                 }
             }
         }
-    }
-
-    public void initIntersections() {
-
     }
 
     public Roxel takeRoxel(Roxel template) {

@@ -38,6 +38,7 @@ public class Main extends BasicGame {
         mapHeight = tiledMap.getHeight();
         mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
+        xapHelper.initTrafficLights();
         xapHelper.initCars(mapWidth, mapHeight, SPEED);
 
         Car cars[] = xapHelper.readAllCars();
