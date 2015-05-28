@@ -28,10 +28,6 @@ public class Roxel implements Serializable {
         this.openDirection = direction;
     }
 
-    public Roxel(Integer x, Integer y, Car.Direction direction, Boolean junction) {
-        this(x, y, direction);
-    }
-
     /**
      *
      * @return the id

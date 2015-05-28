@@ -2,6 +2,7 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
+import domain.TrafficLight;
 import java.util.Random;
 import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
@@ -46,11 +47,11 @@ public class XapHelper {
                         } else {
                             roxel.setOpenDirection(Car.Direction.SOUTH);
                         }
-                        // roxel.setOpenDirection(Car.Direction.TODECIDE);
+                         roxel.setOpenDirection(Car.Direction.TODECIDE);
 
                         // creates a traffic light thread
-                        /*Thread tl = new Thread(new TrafficLight(i, j));
-                        tl.start();*/
+                        Thread tl = new Thread(new TrafficLight(i, j));
+                        tl.start();
                     } else if (i % 3 != 1 && j % 3 == 1) {
                         roxel.setOpenDirection(Car.Direction.EAST);
                     } else if (i % 3 == 1 && j % 3 != 1) {
