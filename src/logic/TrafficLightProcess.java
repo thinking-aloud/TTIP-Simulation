@@ -1,6 +1,6 @@
 /*
  */
-package trafficlight;
+package logic;
 
 import domain.Car;
 import domain.Roxel;
@@ -19,12 +19,12 @@ import org.openspaces.events.notify.NotifyType;
 @EventDriven
 @Notify(performTakeOnNotify = true, ignoreEventOnNullTake = true)
 @NotifyType(write = true, update = true)
-public class TrafficLightProcessor {
+public class TrafficLightProcess {
     
-    @GigaSpaceContext(name = "eventSpace")
+    @GigaSpaceContext
     GigaSpace gs;
     
-    public TrafficLightProcessor(GigaSpace gs) {
+    public TrafficLightProcess(GigaSpace gs) {
         this.gs = gs;
     }
     
@@ -51,11 +51,13 @@ public class TrafficLightProcessor {
         Roxel rox = xapHelper.takeRoxel(template);*/
 
         if (rox != null) {
+            System.out.println("Kreuzung " + rox.getX() + ", " + rox.getY() + " wurde in Richtung verlassen.");
+
             //Roxel prevNorth = xapHelper.readRoxelById(previousNorth);
             Roxel prevNorth = gs.read(new Roxel(rox.getX(), rox.getY()-1));
             //Roxel prevWest = xapHelper.readRoxelById(previousWest);
             Roxel prevWest = gs.read(new Roxel(rox.getX()-1, rox.getY()));
-
+            
             if (prevNorth != null && prevWest != null) {
                 if (prevNorth.isOccupied() && !prevWest.isOccupied()) {
                     rox.setOpenDirection(Car.Direction.SOUTH);
@@ -65,6 +67,8 @@ public class TrafficLightProcessor {
                     rox.setOpenDirection(Car.Direction.EAST);
                 }
             }
+            System.out.println("Kreuzung " + rox.getX() + ", " + rox.getY() + " wurde in Richtung " + rox.getOpenDirection() + " gesetzt.");
+
         }
         return rox;
     }

@@ -3,14 +3,16 @@ package helper;
 import domain.Car;
 import domain.Roxel;
 import domain.TrafficLight;
-import java.util.Random;
+import logic.CarProcess;
 import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.GigaSpaceConfigurer;
 import org.openspaces.core.space.SpaceProxyConfigurer;
 import org.openspaces.events.notify.SimpleNotifyContainerConfigurer;
 import org.openspaces.events.notify.SimpleNotifyEventListenerContainer;
-import trafficlight.TrafficLightProcessor;
+import logic.TrafficLightProcess;
+import org.openspaces.events.polling.SimplePollingContainerConfigurer;
+import org.openspaces.events.polling.SimplePollingEventListenerContainer;
 
 public class XapHelper {
 
@@ -41,13 +43,13 @@ public class XapHelper {
 
                     if (roxel.isJunction()) {
                         // Set random Direction for Junction
-                        int dir = new Random().nextInt(2);
-                        if (dir == 1) {
-                            roxel.setOpenDirection(Car.Direction.EAST);
-                        } else {
-                            roxel.setOpenDirection(Car.Direction.SOUTH);
-                        }
-                         roxel.setOpenDirection(Car.Direction.TODECIDE);
+                        /*int dir = new Random().nextInt(2);
+                         if (dir == 1) {
+                         roxel.setOpenDirection(Car.Direction.EAST);
+                         } else {
+                         roxel.setOpenDirection(Car.Direction.SOUTH);
+                         }*/
+                        roxel.setOpenDirection(Car.Direction.TODECIDE);
 
                         // creates a traffic light thread
                         Thread tl = new Thread(new TrafficLight(i, j));
@@ -62,12 +64,19 @@ public class XapHelper {
             }
         }
     }
-    
+
     public void initTrafficLights() {
         SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(gigaSpace)
-                .eventListenerAnnotation(new TrafficLightProcessor(gigaSpace))
+                .eventListenerAnnotation(new TrafficLightProcess(gigaSpace))
                 .notifyContainer();
         nelc.start();
+    }
+
+    public void createCarProcess(Car car) {
+        SimplePollingEventListenerContainer pelc = new SimplePollingContainerConfigurer(
+                gigaSpace).eventListenerAnnotation(new CarProcess(car, gigaSpace))
+                .pollingContainer();
+        pelc.start();
     }
 
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
