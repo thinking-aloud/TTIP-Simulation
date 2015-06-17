@@ -10,6 +10,8 @@ import domain.CarAllowance;
 import domain.Roxel;
 import domain.RoxelRegistration;
 import gui.Main;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.context.GigaSpaceContext;
 import org.openspaces.events.EventDriven;
@@ -79,13 +81,16 @@ public class CarProcess {
      }*/
     @SpaceDataEvent
     public void move(CarAllowance allowance) {
+        // takes the allowance out of the TS. Prevends instance flooding
+        gs.take(allowance);
+
         if (allowance.getRoxelId() != null) {
             Roxel template = new Roxel(car.getX(), car.getY());
             template.setOccupied(true);
             Roxel currentRoxel = gs.take(template);
             Roxel nextRoxel = gs.readById(Roxel.class, allowance.getRoxelId());
             if (nextRoxel != null) {
-                System.out.println("CarProcess.move(" + nextRoxel.getX() + ", " + nextRoxel.getY() + ")");
+//                System.out.println("CarProcess.move(" + nextRoxel.getX() + ", " + nextRoxel.getY() + ")");
 
                 if (currentRoxel != null) {
                     if (!nextRoxel.isOccupied()
@@ -109,46 +114,55 @@ public class CarProcess {
                         /*System.out.println("Car " + this.car.getId() + " moved to "
                          + this.car.getX() + ", " + this.car.getY());*/
                     }
+                    gs.write(currentRoxel);
                 }
             }
-            gs.write(currentRoxel);
             gs.write(nextRoxel);
         }
         registerForNextRoxel();
     }
 
-    private Roxel getNextRoxel() {
+    private Roxel readNextRoxel() {
+        Roxel template = null;
+
         switch (car.getDrivingDirection()) {
             case EAST:
                 if (this.car.getX() < Main.mapWidth - 1) {
-                    Roxel template = new Roxel(this.car.getX() + 1, this.car.getY());
-                    return gs.read(template);
+                    template = new Roxel(this.car.getX() + 1, this.car.getY());
                 } else {
-                    Roxel template = new Roxel(0, this.car.getY());
-                    return gs.read(template);
+                    template = new Roxel(0, this.car.getY());
                 }
+                break;
             case SOUTH:
                 if (this.car.getY() < Main.mapHeight - 1) {
-                    Roxel template = new Roxel(this.car.getX(), this.car.getY() + 1);
-                    return gs.read(template);
+                    template = new Roxel(this.car.getX(), this.car.getY() + 1);
                 } else {
-                    Roxel template = new Roxel(this.car.getX(), 0);
-                    return gs.read(template);
+                    template = new Roxel(this.car.getX(), 0);
                 }
         }
-        return null;
+
+        return gs.read(template);
     }
 
     private void registerForNextRoxel() {
         Integer time = 30;
-        Roxel nextRoxel = getNextRoxel();
+        Roxel nextRoxel = readNextRoxel();
+        RoxelRegistration reg;
+
         if (nextRoxel != null) {
-            RoxelRegistration reg = new RoxelRegistration(nextRoxel.getId(), this.car.getId(), time);
-            gs.write(reg);
+            reg = new RoxelRegistration(nextRoxel.getId(), this.car.getId(), time);
+
         } else {
-            System.out.println("Car " + this.car.getX() + ", " + this.car.getY() + ", " + this.car.getDrivingDirection() + " konnte nicht fuer naechstes Roxel registrieren.");
-            RoxelRegistration reg = new RoxelRegistration(null, this.car.getId(), time);
-            gs.write(reg);
+
+            System.out.println("CarProcess.readNextRoxel(): " + car.getDrivingDirection() + ", "
+                    + car.getX() + ", " + car.getY());
+
+            System.out.println("CarProcess.registerForNextRoxel(): Car " + this.car.getX()
+                    + ", " + this.car.getY() + ", " + this.car.getDrivingDirection()
+                    + " couldn't register for next roxel.");
+
+            reg = new RoxelRegistration(null, this.car.getId(), time);
         }
+        gs.write(reg);
     }
 }
