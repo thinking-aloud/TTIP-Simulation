@@ -63,10 +63,10 @@ public class CarProcess {
                 template = null;
                 break;
         }
-        if (template != null) {
-            System.out.println("Car (" + car.getX() + ", " + car.getY() + ") wants to move to "
+        /*if (template != null) {
+            System.out.println("Car " + this.car.getId() + " wants to move to "
                     + template.getX() + ", " + template.getY());
-        }
+        }*/
         return template;
     }
 
@@ -82,8 +82,8 @@ public class CarProcess {
         if (currentRoxel != null && rox != null) {
             if (!rox.isOccupied()
                     && (rox.getOpenDirection() == this.car.getDrivingDirection())) {
-                System.out.println("Car " + this.car.getId() + " is about to move to "
-                        + rox.getX() + ", " + rox.getY());
+                /*System.out.println("Car " + this.car.getId() + " is about to move to "
+                    + rox.getX() + ", " + rox.getY());*/
 
                 // set next roxel occupied
                 rox.setOccupied(true);
@@ -99,8 +99,8 @@ public class CarProcess {
                     currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
                 }
                 gs.write(currentRoxel);
-                System.out.println("Car " + this.car.getId() + " moved to "
-                        + this.car.getX() + ", " + this.car.getY());
+                /*System.out.println("Car " + this.car.getId() + " moved to "
+                    + this.car.getX() + ", " + this.car.getY());*/
             }
         }
         return rox;

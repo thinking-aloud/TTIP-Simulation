@@ -51,10 +51,10 @@ public class XapHelper {
                          roxel.setOpenDirection(Car.Direction.SOUTH);
                          }*/
                         roxel.setOpenDirection(Car.Direction.TODECIDE);
-
+                        initTrafficLightProcess(roxel);
                         // creates a traffic light thread
-                        Thread tl = new Thread(new TrafficLight(i, j));
-                        tl.start();
+                        /*Thread tl = new Thread(new TrafficLight(i, j));
+                        tl.start();*/
                     } else if (i % 3 != 1 && j % 3 == 1) {
                         roxel.setOpenDirection(Car.Direction.EAST);
                     } else if (i % 3 == 1 && j % 3 != 1) {
@@ -66,9 +66,9 @@ public class XapHelper {
         }
     }
 
-    public void initTrafficLights() {
+    public void initTrafficLightProcess(Roxel rox) {
         SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(gigaSpace)
-                .eventListenerAnnotation(new TrafficLightProcess(gigaSpace))
+                .eventListenerAnnotation(new TrafficLightProcess(gigaSpace, rox.getX(), rox.getY()))
                 .notifyContainer();
         nelc.start();
     }
