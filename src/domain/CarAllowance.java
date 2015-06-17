@@ -14,11 +14,17 @@ import com.gigaspaces.annotation.pojo.SpaceId;
 public class CarAllowance {
     private String id;
     private String carId;
+    private String roxelId;
     
     public CarAllowance() {}
     
     public CarAllowance(String carId) {
         this.carId = carId;
+    }
+    
+    public CarAllowance(String carId, String roxelId) {
+        this.carId = carId;
+        this.roxelId = roxelId;
     }
 
     /**
@@ -48,6 +54,20 @@ public class CarAllowance {
      */
     public void setCarId(String carId) {
         this.carId = carId;
+    }
+
+    /**
+     * @return the roxelId
+     */
+    public String getRoxelId() {
+        return roxelId;
+    }
+
+    /**
+     * @param roxelId the roxelId to set
+     */
+    public void setRoxelId(String roxelId) {
+        this.roxelId = roxelId;
     }
     
     

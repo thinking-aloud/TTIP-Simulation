@@ -82,6 +82,4 @@ public class RoxelRegistration {
     public void setTimer(Integer timer) {
         this.timer = timer;
     }
-    
-    
 }

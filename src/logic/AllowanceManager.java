@@ -24,26 +24,27 @@ import org.openspaces.events.polling.Polling;
 @Polling
 @NotifyType(write = true, update = true)
 public class AllowanceManager {
+
     @GigaSpaceContext
     GigaSpace gs;
-    
+
     public AllowanceManager(GigaSpace gs) {
         this.gs = gs;
     }
-    
+
     @EventTemplate
     public RoxelRegistration registration() {
         return new RoxelRegistration();
     }
-    
+
     @SpaceDataEvent
     public void handleRegistration(RoxelRegistration reg) {
-        Roxel desired = gs.readById(Roxel.class, reg.getRoxelId());
         if (reg.getTimer() > 0) {
-            reg.setTimer(reg.getTimer()-1);
+            reg.setTimer(reg.getTimer() - 1);
             gs.write(reg);
-        } else if (!desired.isOccupied()) {
-            CarAllowance allowance = new CarAllowance(reg.getCarId());
+        } else /*if (reg.getRoxelId() != null)*/ {
+            // Roxel desired = gs.readById(Roxel.class, reg.getRoxelId());
+            CarAllowance allowance = new CarAllowance(reg.getCarId(), reg.getRoxelId());
             gs.write(allowance);
         }
     }

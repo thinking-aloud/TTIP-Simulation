@@ -79,63 +79,60 @@ public class CarProcess {
      }*/
     @SpaceDataEvent
     public void move(CarAllowance allowance) {
-        Roxel template = new Roxel(car.getX(), car.getY());
-        template.setOccupied(true);
-        Roxel currentRoxel = gs.take(template);
-        Roxel nextRoxel = getNextRoxel(currentRoxel);
-        if (nextRoxel != null) {
-            System.out.println("CarProcess.move(" + nextRoxel.getX() + ", " + nextRoxel.getY() + ")");
+        if (allowance.getRoxelId() != null) {
+            Roxel template = new Roxel(car.getX(), car.getY());
+            template.setOccupied(true);
+            Roxel currentRoxel = gs.take(template);
+            Roxel nextRoxel = gs.readById(Roxel.class, allowance.getRoxelId());
+            if (nextRoxel != null) {
+                System.out.println("CarProcess.move(" + nextRoxel.getX() + ", " + nextRoxel.getY() + ")");
 
-            if (currentRoxel != null) {
-                if (!nextRoxel.isOccupied()
-                        && (nextRoxel.getOpenDirection() == this.car.getDrivingDirection())) {
-                    nextRoxel = gs.take(nextRoxel);
-                    /*System.out.println("Car " + this.car.getId() + " is about to move to "
-                     + rox.getX() + ", " + rox.getY());*/
+                if (currentRoxel != null) {
+                    if (!nextRoxel.isOccupied()
+                            && (nextRoxel.getOpenDirection() == this.car.getDrivingDirection())) {
+                        /*System.out.println("Car " + this.car.getId() + " is about to move to "
+                         + rox.getX() + ", " + rox.getY());*/
 
-                    // set next roxel occupied
-                    nextRoxel.setOccupied(true);
+                        // set next roxel occupied
+                        nextRoxel.setOccupied(true);
 
-                    // move car
-                    car.setX(nextRoxel.getX());
-                    car.setY(nextRoxel.getY());
-                    gs.write(this.car);
+                        // move car
+                        car.setX(nextRoxel.getX());
+                        car.setY(nextRoxel.getY());
+                        gs.write(this.car);
 
-                    // pass old roxel to trafficLight or TS
-                    currentRoxel.setOccupied(false);
-                    if (currentRoxel.isJunction() != null && currentRoxel.isJunction()) {
-                        currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
+                        // pass old roxel to trafficLight or TS
+                        currentRoxel.setOccupied(false);
+                        if (currentRoxel.isJunction() != null && currentRoxel.isJunction()) {
+                            currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
+                        }
+                        /*System.out.println("Car " + this.car.getId() + " moved to "
+                         + this.car.getX() + ", " + this.car.getY());*/
                     }
-                    gs.write(currentRoxel);
-                    /*System.out.println("Car " + this.car.getId() + " moved to "
-                     + this.car.getX() + ", " + this.car.getY());*/
                 }
             }
+            gs.write(currentRoxel);
+            gs.write(nextRoxel);
         }
-        gs.write(nextRoxel);
         registerForNextRoxel();
     }
 
-    private Roxel getNextRoxel(Roxel currentRoxel) {
+    private Roxel getNextRoxel() {
         switch (car.getDrivingDirection()) {
             case EAST:
-                if (currentRoxel.getX() < Main.mapWidth - 1) {
-                    Roxel template = new Roxel(currentRoxel.getX() + 1,
-                            currentRoxel.getY(), Car.Direction.EAST);
+                if (this.car.getX() < Main.mapWidth - 1) {
+                    Roxel template = new Roxel(this.car.getX() + 1, this.car.getY());
                     return gs.read(template);
                 } else {
-                    Roxel template = new Roxel(0,
-                            currentRoxel.getY(), Car.Direction.EAST);
+                    Roxel template = new Roxel(0, this.car.getY());
                     return gs.read(template);
                 }
             case SOUTH:
-                if (currentRoxel.getY() < Main.mapHeight - 1) {
-                    Roxel template = new Roxel(currentRoxel.getX(),
-                            currentRoxel.getY() + 1, Car.Direction.SOUTH);
+                if (this.car.getY() < Main.mapHeight - 1) {
+                    Roxel template = new Roxel(this.car.getX(), this.car.getY() + 1);
                     return gs.read(template);
                 } else {
-                    Roxel template = new Roxel(currentRoxel.getX(),
-                            0, Car.Direction.SOUTH);
+                    Roxel template = new Roxel(this.car.getX(), 0);
                     return gs.read(template);
                 }
         }
@@ -143,15 +140,15 @@ public class CarProcess {
     }
 
     private void registerForNextRoxel() {
-        Roxel template = new Roxel(car.getX(), car.getY());
-        template.setOccupied(true);
-        Roxel currentRoxel = gs.read(template);
-        Roxel nextRoxel = getNextRoxel(currentRoxel);
+        Integer time = 30;
+        Roxel nextRoxel = getNextRoxel();
         if (nextRoxel != null) {
-            RoxelRegistration reg = new RoxelRegistration(nextRoxel.getId(), this.car.getId(), 100);
+            RoxelRegistration reg = new RoxelRegistration(nextRoxel.getId(), this.car.getId(), time);
             gs.write(reg);
         } else {
             System.out.println("Car " + this.car.getX() + ", " + this.car.getY() + ", " + this.car.getDrivingDirection() + " konnte nicht fuer naechstes Roxel registrieren.");
+            RoxelRegistration reg = new RoxelRegistration(null, this.car.getId(), time);
+            gs.write(reg);
         }
     }
 }
