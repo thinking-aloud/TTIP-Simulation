@@ -6,7 +6,6 @@
 package logic;
 
 import domain.CarAllowance;
-import domain.Roxel;
 import domain.RoxelRegistration;
 import org.openspaces.core.GigaSpace;
 import org.openspaces.core.context.GigaSpaceContext;
@@ -39,6 +38,7 @@ public class AllowanceManager {
 
     @SpaceDataEvent
     public void handleRegistration(RoxelRegistration reg) {
+//        System.out.println("AllowanceManager.handleRegistration()");
         if (reg.getTimer() > 0) {
             reg.setTimer(reg.getTimer() - 1);
             gs.write(reg);
