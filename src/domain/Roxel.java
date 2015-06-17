@@ -13,14 +13,20 @@ public class Roxel implements Serializable {
     // constructor for Gigaspaces querying
     public Roxel() {
         this.occupied = Boolean.FALSE;
+        if (x != null && y != null) {
+            this.junction = this.junction = x % 3 == 1 && y % 3 == 1;
+        }
+    }
+
+    public Roxel(Car.Direction direction) {
+        this();
+        this.openDirection = direction;
     }
 
     public Roxel(Integer x, Integer y) {
         this();
         this.x = x;
         this.y = y;
-        
-        this.junction = this.junction = x % 3 == 1 && y % 3 == 1;
     }
 
     public Roxel(Integer x, Integer y, Car.Direction direction) {

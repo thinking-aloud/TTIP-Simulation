@@ -31,6 +31,7 @@ public class XapHelper {
     }
 
     public void initRoxels(int mapWidth, int mapHeight) {
+        System.out.println("XapHelper.initRoxels(" + mapWidth + ", " + mapHeight + ")");
         // clears gigaspaces on startup
         gigaSpace.clear(null);
 
@@ -41,7 +42,7 @@ public class XapHelper {
 
                     Roxel roxel = new Roxel(i, j);
 
-                    if (roxel.isJunction()) {
+                    if (roxel.isJunction() != null && roxel.isJunction()) {
                         // Set random Direction for Junction
                         /*int dir = new Random().nextInt(2);
                          if (dir == 1) {
@@ -80,9 +81,10 @@ public class XapHelper {
     }
 
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
-
+        System.out.println("XapHelper.initCars(" + mapWidth + ", " + mapHeight + ", " + speed + ")");
         // Horizontal
         for (int row = 0; row < mapHeight; row++) {
+//        for (int row = 0; row < 2; row++) {
             for (int column = 0; column < horizontalCarRows; column++) {
 
                 if (row % 3 == 1 && column % 3 != 1) {

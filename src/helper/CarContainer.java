@@ -10,7 +10,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Point;
 
 public class CarContainer implements Runnable {
-
+    
     private final Car car;
     private final Image image;
 
@@ -44,6 +44,8 @@ public class CarContainer implements Runnable {
     // public methods
     //
     public void move() {
+        System.out.println("CarContainer.move()");
+
         Roxel template = new Roxel((int) car.getX(), (int) car.getY());
         template.setOccupied(true);
         Roxel currentRoxel = xapHelper.takeRoxel(template);

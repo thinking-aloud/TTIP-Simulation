@@ -64,7 +64,7 @@ public class Main extends BasicGame {
         tiledMap.render(0, 0);
 
         for (Roxel roxel : xapHelper.readAllRoxels()) {
-            if (roxel.isJunction()) {
+            if (roxel.isJunction() != null && roxel.isJunction()) {
                 if (roxel.getOpenDirection() == Car.Direction.SOUTH) {
                     arrow.rotate(90);
                     arrow.draw(roxel.getX() * 64 + 16, roxel.getY() * 64 + 16);
