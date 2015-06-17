@@ -2,7 +2,7 @@ package helper;
 
 import domain.Car;
 import domain.Roxel;
-import domain.TrafficLight;
+import logic.AllowanceManager;
 import logic.CarProcess;
 import org.newdawn.slick.SlickException;
 import org.openspaces.core.GigaSpace;
@@ -67,6 +67,7 @@ public class XapHelper {
     }
 
     public void initTrafficLightProcess(Roxel rox) {
+        System.out.println("XapHelper.initTrafficLightProcess(" + rox.getX() + ", " + rox.getY() + ")");
         SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(gigaSpace)
                 .eventListenerAnnotation(new TrafficLightProcess(gigaSpace, rox.getX(), rox.getY()))
                 .notifyContainer();
@@ -74,10 +75,11 @@ public class XapHelper {
     }
 
     public void createCarProcess(Car car) {
-        SimplePollingEventListenerContainer pelc = new SimplePollingContainerConfigurer(
+        // Set Process
+        SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(
                 gigaSpace).eventListenerAnnotation(new CarProcess(car, gigaSpace))
-                .pollingContainer();
-        pelc.start();
+                .notifyContainer();
+        nelc.start();
     }
 
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
@@ -165,4 +167,11 @@ public class XapHelper {
         return (!roxel.getOpenDirection().equals(Car.Direction.TODECIDE) && roxel.getOpenDirection() == direction);
     }
 
+    public void startAllowanceManager() {
+        System.out.println("XapHelper.startAllowanceManager()");
+        SimplePollingEventListenerContainer pelc = new SimplePollingContainerConfigurer(gigaSpace)
+                .eventListenerAnnotation(new AllowanceManager(gigaSpace))
+                .pollingContainer();
+        pelc.start();
+    }
 }

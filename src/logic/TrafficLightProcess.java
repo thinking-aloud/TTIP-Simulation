@@ -68,7 +68,7 @@ public class TrafficLightProcess {
          Roxel rox = xapHelper.takeRoxel(template);*/
 
         if (rox != null) {
-            System.out.println("Kreuzung " + rox.getX() + ", " + rox.getY() + " wurde verlassen.");
+            //System.out.println("Kreuzung " + rox.getX() + ", " + rox.getY() + " wurde verlassen.");
 
             //Roxel prevNorth = xapHelper.readRoxelById(previousNorth);
             Roxel prevNorth = gs.readById(Roxel.class, previousNorth);
@@ -77,11 +77,13 @@ public class TrafficLightProcess {
 
             try {
             //if (prevNorth != null && prevWest != null) {
-                if (prevNorth.isOccupied() && !prevWest.isOccupied()) {
+                if (prevNorth.isOccupied()/* && !prevWest.isOccupied()*/) {
                     rox.setOpenDirection(Car.Direction.SOUTH);
-                } else if (!prevNorth.isOccupied() && prevWest.isOccupied()) {
+                } /*else if (!prevNorth.isOccupied() && prevWest.isOccupied()) {
                     rox.setOpenDirection(Car.Direction.EAST);
                 } else if (prevNorth.isOccupied() && prevWest.isOccupied()) {
+                    rox.setOpenDirection(Car.Direction.EAST);
+                }*/ else {
                     rox.setOpenDirection(Car.Direction.EAST);
                 }
             //}

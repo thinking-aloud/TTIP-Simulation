@@ -52,6 +52,8 @@ public class Main extends BasicGame {
             carContainerThreads.add(thread);*/
             xapHelper.createCarProcess(car);
         }
+        
+        xapHelper.startAllowanceManager();
     }
 
     @Override

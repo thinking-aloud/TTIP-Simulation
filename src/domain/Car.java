@@ -86,5 +86,4 @@ public class Car {
     public void setY(Integer y) {
         this.y = y;
     }
-
 }
