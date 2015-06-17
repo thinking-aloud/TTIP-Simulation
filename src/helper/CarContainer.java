@@ -75,7 +75,7 @@ public class CarContainer implements Runnable {
             if (trafficControl && currentRoxel.isJunction()) {
                 currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
             }
-            xapHelper.writeToTupelspace(currentRoxel);
+            
         }
     }
 

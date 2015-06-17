@@ -21,8 +21,8 @@ public class XapHelper {
 
     // you get 2/3 (x mod 3 != 1) cars. No cars on intersections
     // 0 = no cars, 1-2 = one car, 3 = 2 cars, 4 = 3 cars
-    private final int horizontalCarRows = 3;
-    private final int verticalCarRows = 3;
+    private final int horizontalCarRows = 1;
+    private final int verticalCarRows = 1;
 
     public XapHelper() {
         configurer = new SpaceProxyConfigurer("eventSpace");
@@ -85,8 +85,8 @@ public class XapHelper {
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
         System.out.println("XapHelper.initCars(" + mapWidth + ", " + mapHeight + ", " + speed + ")");
         // Horizontal
-        for (int row = 0; row < mapHeight; row++) {
-//        for (int row = 0; row < 2; row++) {
+//        for (int row = 0; row < mapHeight; row++) {
+        for (int row = 0; row < 2; row++) {
             for (int column = 0; column < horizontalCarRows; column++) {
 
                 if (row % 3 == 1 && column % 3 != 1) {
@@ -112,7 +112,8 @@ public class XapHelper {
         }
 
         // Vertical
-        for (int column = 0; column < mapWidth; column++) {
+//        for (int column = 0; column < mapWidth; column++) {
+        for (int column = 0; column < 2; column++) {
             for (int row = 0; row < verticalCarRows; row++) {
 
                 if (column % 3 == 1 && row % 3 != 1) {
