@@ -9,6 +9,9 @@ import org.openspaces.events.EventTemplate;
 import org.openspaces.events.adapter.SpaceDataEvent;
 import org.openspaces.events.notify.NotifyType;
 import org.openspaces.events.polling.Polling;
+import org.openspaces.events.polling.ReceiveHandler;
+import org.openspaces.events.polling.receive.ReceiveOperationHandler;
+import org.openspaces.events.polling.receive.SingleTakeReceiveOperationHandler;
 
 @EventDriven
 @Polling
@@ -36,5 +39,12 @@ public class AllowanceManager {
             CarAllowance allowance = new CarAllowance(reg.getCarId(), reg.getRoxelId());
             gs.write(allowance);
         }
+    }
+
+    @ReceiveHandler
+    public ReceiveOperationHandler receiveHandler() {
+        SingleTakeReceiveOperationHandler receiveHandler = new SingleTakeReceiveOperationHandler();
+        receiveHandler.setNonBlocking(true);
+        return receiveHandler;
     }
 }

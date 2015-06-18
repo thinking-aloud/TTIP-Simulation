@@ -40,7 +40,7 @@ public class CarProcess {
             Roxel template = new Roxel(car.getX(), car.getY());
             template.setOccupied(true);
             Roxel currentRoxel = gs.take(template);
-            Roxel nextRoxel = gs.readById(Roxel.class, allowance.getRoxelId());
+            Roxel nextRoxel = gs.takeById(Roxel.class, allowance.getRoxelId());
             if (nextRoxel != null) {
                 if (!nextRoxel.isOccupied()) {
                     nextRoxel.setCarWaiting(Boolean.FALSE);
@@ -95,7 +95,7 @@ public class CarProcess {
     }
 
     private void registerForNextRoxel() {
-        Integer time = 30;
+        Integer time = 20;
         Roxel nextRoxel = takeNextRoxel();
         RoxelRegistration reg;
 
