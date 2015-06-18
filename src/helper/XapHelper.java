@@ -42,8 +42,14 @@ public class XapHelper {
                 if (j % 3 == 1 || i % 3 == 1) {
 
                     Roxel roxel = new Roxel(i, j);
+                    
+                    if (i <= mapWidth/2) {
+                        roxel.setTileNumber(0);
+                    } else {
+                        roxel.setTileNumber(1);
+                    }
 
-                    if (roxel.isJunction() != null && roxel.isJunction()) {
+                    if (roxel.isJunction()) {
                         roxel.setOpenDirection(Car.Direction.TODECIDE);
                         initTrafficLightProcess(roxel);
                     } else if (i % 3 != 1 && j % 3 == 1) {

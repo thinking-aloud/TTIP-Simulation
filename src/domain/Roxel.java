@@ -1,10 +1,12 @@
 package domain;
 
 import com.gigaspaces.annotation.pojo.SpaceId;
+import com.gigaspaces.annotation.pojo.SpaceRouting;
 import java.io.Serializable;
 
 public class Roxel implements Serializable {
 
+    private Integer tileNumber;
     private String id;
     private Integer x, y;
     private Car.Direction openDirection;
@@ -114,6 +116,21 @@ public class Roxel implements Serializable {
 
     public void setCarWaiting(Boolean carWaiting) {
         this.carWaiting = carWaiting;
+    }
+
+    /**
+     * @return the tileNumber
+     */
+    @SpaceRouting
+    public Integer getTileNumber() {
+        return tileNumber;
+    }
+
+    /**
+     * @param tileNumber the tileNumber to set
+     */
+    public void setTileNumber(Integer tileNumber) {
+        this.tileNumber = tileNumber;
     }
 
 }
