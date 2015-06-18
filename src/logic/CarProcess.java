@@ -91,7 +91,6 @@ public class CarProcess {
                     template = new Roxel(this.car.getX(), 0);
                 }
         }
-
         return gs.take(template);
     }
 

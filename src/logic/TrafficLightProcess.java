@@ -106,9 +106,9 @@ public class TrafficLightProcess {
                     + rox.getX() + ", " + rox.getY()
                     + ": Fehler beim lesen der benachbarten Felder.");
         }
-        System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
+        /*System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
                 + rox.getX() + ", " + rox.getY() + " wurde in Richtung "
-                + rox.getOpenDirection() + " gesetzt.");
+                + rox.getOpenDirection() + " gesetzt.");*/
         this.lastDirection = rox.getOpenDirection();
         return rox;
     }
