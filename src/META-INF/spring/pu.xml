@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+
     top level element of the Spring configuration. Note the multiple namespace definition for both GigaSpaces and Spring.
--->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:context="http://www.springframework.org/schema/context"
@@ -17,26 +17,26 @@
    http://www.openspaces.org/schema/remoting http://www.openspaces.org/schema/10.1/remoting/openspaces-remoting.xsd
    http://www.openspaces.org/schema/sla http://www.openspaces.org/schema/10.1/sla/openspaces-sla.xsd">
 
-    <!-- Enables to configure Spring beans through annotations   -->
+     Enables to configure Spring beans through annotations   
     <context:annotation-config />
 
-    <!-- Enable @PostPrimary and others annotation support. -->
+     Enable @PostPrimary and others annotation support. 
     <os-core:annotation-support />
 
-    <!-- Enables using @Polling and @Notify annotations to creating polling and notify containers  -->
+     Enables using @Polling and @Notify annotations to creating polling and notify containers  
     <os-events:annotation-support />
 
-    <!-- Enables using @RemotingService and other remoting related annotations   -->
+     Enables using @RemotingService and other remoting related annotations   
     <os-remoting:annotation-support />
 
-    <!--
+    
         A bean representing a space. Here we configure an embedded space (note the url element which does
         not contain any remote protocol prefix. Also note that we do not specify here the cluster topology
         of the space. It is declared by the os-sla:sla element of this pu.xml file.
-    -->
+    
     <os-core:embedded-space id="space" name="eventSpace" />
 
-    <!-- Define the GigaSpace instance that the application will use to access the space  -->
+     Define the GigaSpace instance that the application will use to access the space  
     <os-core:giga-space id="eventSpace" space="space"/>
 
 </beans>

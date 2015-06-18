@@ -21,7 +21,6 @@ public class Main extends BasicGame {
     static final int FPS = 60;
     static final int SPEED = 1000; // sleep between updates (0=fastest)
     private final XapHelper xapHelper;
-    private final ArrayList<Thread> carContainerThreads;
     private static Image arrow, questionMark;
     public static int mapHeight;
     public static int mapWidth;
@@ -29,7 +28,6 @@ public class Main extends BasicGame {
     public Main(String gamename) {
         super(gamename);
         xapHelper = new XapHelper();
-        this.carContainerThreads = new ArrayList();
     }
 
     @Override

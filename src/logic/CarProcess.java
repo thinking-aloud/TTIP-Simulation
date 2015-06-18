@@ -42,7 +42,9 @@ public class CarProcess {
             Roxel currentRoxel = gs.take(template);
             Roxel nextRoxel = gs.readById(Roxel.class, allowance.getRoxelId());
             if (nextRoxel != null) {
-                nextRoxel.setCarWaiting(Boolean.FALSE);
+                if (!nextRoxel.isOccupied()) {
+                    nextRoxel.setCarWaiting(Boolean.FALSE);
+                }
 
                 if (currentRoxel != null) {
                     if (!nextRoxel.isOccupied()
@@ -71,7 +73,7 @@ public class CarProcess {
         registerForNextRoxel();
     }
 
-    private Roxel readNextRoxel() {
+    private Roxel takeNextRoxel() {
         Roxel template = null;
 
         switch (car.getDrivingDirection()) {
@@ -90,25 +92,20 @@ public class CarProcess {
                 }
         }
 
-        return gs.read(template);
+        return gs.take(template);
     }
 
     private void registerForNextRoxel() {
         Integer time = 30;
-        Roxel nextRoxel = readNextRoxel();
+        Roxel nextRoxel = takeNextRoxel();
         RoxelRegistration reg;
 
         if (nextRoxel != null) {
             reg = new RoxelRegistration(nextRoxel.getId(), this.car.getId(), time);
-            Roxel rox = gs.take(nextRoxel);
-            if (rox != null) {
-                rox.setCarWaiting(Boolean.TRUE);
-                gs.write(rox);
-            }
-        } else {
-            System.out.println("CarProcess.readNextRoxel(): " + car.getDrivingDirection() + ", "
-                    + car.getX() + ", " + car.getY());
 
+            nextRoxel.setCarWaiting(Boolean.TRUE);
+            gs.write(nextRoxel);
+        } else {
             System.out.println("CarProcess.registerForNextRoxel(): Car " + this.car.getX()
                     + ", " + this.car.getY() + ", " + this.car.getDrivingDirection()
                     + " couldn't register for next roxel.");

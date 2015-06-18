@@ -58,7 +58,7 @@ public class XapHelper {
     }
 
     public void initTrafficLightProcess(Roxel rox) {
-        System.out.println("XapHelper.initTrafficLightProcess(" + rox.getX() + ", " + rox.getY() + ")");
+//        System.out.println("XapHelper.initTrafficLightProcess(" + rox.getX() + ", " + rox.getY() + ")");
 
         SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(gigaSpace)
                 .eventListenerAnnotation(new TrafficLightProcess(gigaSpace, rox.getX(), rox.getY()))
