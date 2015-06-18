@@ -37,15 +37,14 @@ public class CarProcess {
         gs.take(allowance);
 
         if (allowance.getRoxelId() != null) {
-            Roxel template = new Roxel(car.getX(), car.getY());
-            template.setOccupied(true);
-            Roxel currentRoxel = gs.take(template);
             Roxel nextRoxel = gs.takeById(Roxel.class, allowance.getRoxelId());
             if (nextRoxel != null) {
                 if (!nextRoxel.isOccupied()) {
                     nextRoxel.setCarWaiting(Boolean.FALSE);
                 }
-
+                Roxel template = new Roxel(car.getX(), car.getY());
+                template.setOccupied(true);
+                Roxel currentRoxel = gs.take(template);
                 if (currentRoxel != null) {
                     if (!nextRoxel.isOccupied()
                             && (nextRoxel.getOpenDirection() == this.car.getDrivingDirection())) {
