@@ -43,7 +43,7 @@ public class Main extends BasicGame {
         for (Car car : cars) {
             xapHelper.createCarProcess(car);
         }
-        
+
         xapHelper.startAllowanceManager();
     }
 
@@ -71,11 +71,17 @@ public class Main extends BasicGame {
         }
 
         for (Car car : xapHelper.readAllCars()) {
-            CarContainer cc = new CarContainer(car);
-            float x = cc.getPosition().getX();
-            float y = cc.getPosition().getY();
+            try {
+                CarContainer cc = new CarContainer(car);
 
-            cc.getImage().draw(x, y);
+                float x = cc.getPosition().getX();
+                float y = cc.getPosition().getY();
+
+                cc.getImage().draw(x, y);
+
+            } catch (SlickException e) {
+                System.out.println(e);
+            }
         }
 
     }
