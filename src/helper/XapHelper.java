@@ -21,8 +21,8 @@ public class XapHelper {
 
     // you get 2/3 (x mod 3 != 1) cars. No cars on intersections
     // 0 = no cars, 1-2 = one car, 3 = 2 cars, 4 = 3 cars
-    private final int horizontalCarRows = 1;
-    private final int verticalCarRows = 1;
+    private final int horizontalCarRows = 3;
+    private final int verticalCarRows = 3;
 
     public XapHelper() {
         configurer = new SpaceProxyConfigurer("eventSpace");
@@ -32,6 +32,7 @@ public class XapHelper {
 
     public void initRoxels(int mapWidth, int mapHeight) {
         System.out.println("XapHelper.initRoxels(" + mapWidth + ", " + mapHeight + ")");
+
         // clears gigaspaces on startup
         gigaSpace.clear(null);
 
@@ -43,18 +44,8 @@ public class XapHelper {
                     Roxel roxel = new Roxel(i, j);
 
                     if (roxel.isJunction() != null && roxel.isJunction()) {
-                        // Set random Direction for Junction
-                        /*int dir = new Random().nextInt(2);
-                         if (dir == 1) {
-                         roxel.setOpenDirection(Car.Direction.EAST);
-                         } else {
-                         roxel.setOpenDirection(Car.Direction.SOUTH);
-                         }*/
                         roxel.setOpenDirection(Car.Direction.TODECIDE);
                         initTrafficLightProcess(roxel);
-                        // creates a traffic light thread
-                        /*Thread tl = new Thread(new TrafficLight(i, j));
-                        tl.start();*/
                     } else if (i % 3 != 1 && j % 3 == 1) {
                         roxel.setOpenDirection(Car.Direction.EAST);
                     } else if (i % 3 == 1 && j % 3 != 1) {
@@ -68,6 +59,7 @@ public class XapHelper {
 
     public void initTrafficLightProcess(Roxel rox) {
         System.out.println("XapHelper.initTrafficLightProcess(" + rox.getX() + ", " + rox.getY() + ")");
+
         SimpleNotifyEventListenerContainer nelc = new SimpleNotifyContainerConfigurer(gigaSpace)
                 .eventListenerAnnotation(new TrafficLightProcess(gigaSpace, rox.getX(), rox.getY()))
                 .notifyContainer();
@@ -85,8 +77,7 @@ public class XapHelper {
     public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
         System.out.println("XapHelper.initCars(" + mapWidth + ", " + mapHeight + ", " + speed + ")");
         // Horizontal
-//        for (int row = 0; row < mapHeight; row++) {
-        for (int row = 0; row < 2; row++) {
+        for (int row = 0; row < mapHeight; row++) {
             for (int column = 0; column < horizontalCarRows; column++) {
 
                 if (row % 3 == 1 && column % 3 != 1) {
@@ -112,8 +103,7 @@ public class XapHelper {
         }
 
         // Vertical
-//        for (int column = 0; column < mapWidth; column++) {
-        for (int column = 0; column < 2; column++) {
+        for (int column = 0; column < mapWidth; column++) {
             for (int row = 0; row < verticalCarRows; row++) {
 
                 if (column % 3 == 1 && row % 3 != 1) {

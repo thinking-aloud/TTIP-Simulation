@@ -1,44 +1,35 @@
-/*
- */
 package logic;
 
 import domain.Car;
 import domain.Roxel;
 import gui.Main;
 import org.openspaces.core.GigaSpace;
-import org.openspaces.core.context.GigaSpaceContext;
 import org.openspaces.events.EventDriven;
 import org.openspaces.events.EventTemplate;
 import org.openspaces.events.adapter.SpaceDataEvent;
 import org.openspaces.events.notify.Notify;
 import org.openspaces.events.notify.NotifyType;
 
-/**
- *
- * @author jo
- */
 @EventDriven
 @Notify(performTakeOnNotify = true, ignoreEventOnNullTake = true)
 @NotifyType(write = true, update = true)
 public class TrafficLightProcess {
 
-    @GigaSpaceContext
-    GigaSpace gs;
-
-    int junctionX, junctionY;
+    private final GigaSpace gs;
+    int x, y;
     private final String previousNorth;
     private final String previousWest;
     private Car.Direction direction;
-    private Long lastLightSwitch;
+    private long lastLightSwitch;
     private static final Integer timeBetweenSwitch = 5; // in seconds
 
     public TrafficLightProcess(GigaSpace gs, int x, int y) {
         this.gs = gs;
-        this.junctionX = x;
-        this.junctionY = y;
+        this.x = x;
+        this.y = y;
         this.direction = Car.Direction.EAST;
         lastLightSwitch = System.currentTimeMillis();
-        
+
         if (x > 0) {
             previousWest = gs.read(new Roxel(x - 1, y)).getId();
         } else {
@@ -54,13 +45,14 @@ public class TrafficLightProcess {
 
     @EventTemplate
     public Roxel undecidedJunction() {
-        Roxel template = new Roxel(this.junctionX, this.junctionY, Car.Direction.TODECIDE);
+        Roxel template = new Roxel(x, y, Car.Direction.TODECIDE, true);
         return template;
     }
 
     @SpaceDataEvent
     public Roxel eventListener(Roxel rox) {
-//        System.out.println("TrafficLightProcess.eventListener(" + rox.getX() + ", " + rox.getY() + ")");
+        System.out.println("TrafficLightProcess.eventListener(" + rox.getX() + ", " + rox.getY() + ")");
+
         // switch traffic light
         long currentTime = System.currentTimeMillis();
         if (lastLightSwitch + (1000 * timeBetweenSwitch) < currentTime) {
@@ -69,56 +61,27 @@ public class TrafficLightProcess {
                 direction = Car.Direction.SOUTH;
             }
         }
-        
-        // switch traffic light
-        /*long currentTime = System.currentTimeMillis();
-         if (lastLightSwitch + (1000 * timeBetweenSwitch) < currentTime) {
-         lastLightSwitch = currentTime;
-         if (direction.equals(Car.Direction.EAST)) {
-         direction = Car.Direction.SOUTH;
-         }
-         }
+        Roxel prevNorth = gs.readById(Roxel.class, previousNorth);
+        Roxel prevWest = gs.readById(Roxel.class, previousWest);
 
-         // smart traffic handling
-         Roxel template = new Roxel(getX(), getY(), Car.Direction.TODECIDE);
-         Roxel rox = xapHelper.takeRoxel(template);*/
-
-        if (rox != null) {
-            //System.out.println("Kreuzung " + rox.getX() + ", " + rox.getY() + " wurde verlassen.");
-
-            //Roxel prevNorth = xapHelper.readRoxelById(previousNorth);
-            Roxel prevNorth = gs.readById(Roxel.class, previousNorth);
-            //Roxel prevWest = xapHelper.readRoxelById(previousWest);
-            Roxel prevWest = gs.readById(Roxel.class, previousWest);
-
-            try {
-                //if (prevNorth != null && prevWest != null) {
-                if (prevNorth.isOccupied()/* && !prevWest.isOccupied()*/) {
-                    rox.setOpenDirection(Car.Direction.SOUTH);
-                } /*else if (!prevNorth.isOccupied() && prevWest.isOccupied()) {
-                 rox.setOpenDirection(Car.Direction.EAST);
-                 } else if (prevNorth.isOccupied() && prevWest.isOccupied()) {
-                 rox.setOpenDirection(Car.Direction.EAST);
-                 }*/ else if (prevWest.isOccupied()) {
-                    rox.setOpenDirection(Car.Direction.EAST);
-                } else {
-                     rox.setOpenDirection(direction);
-                }
-                //}
-            } catch (NullPointerException ex) {
-                System.out.println("TrafficLightProcess.eventListener(): Kreuzung " 
-                        + rox.getX() + ", " + rox.getY() 
-                        + ": Fehler beim lesen der benachbarten Felder.");
+        try {
+            if (prevNorth.isOccupied()/* && !prevWest.isOccupied()*/) {
+                rox.setOpenDirection(Car.Direction.SOUTH);
+            } else if (prevWest.isOccupied()) {
+                rox.setOpenDirection(Car.Direction.EAST);
+            } else {
+                rox.setOpenDirection(direction);
             }
-            // THIS IF IS FOR DEBUGGING ONLY!!!
-//            if(rox.getY() != 1) {
-            System.out.println("TrafficLightProcess.eventListener(): Kreuzung " 
-                    + rox.getX() + ", " + rox.getY() + " wurde in Richtung " 
-                    + rox.getOpenDirection() + " gesetzt.");
-//            }
-
+        } catch (NullPointerException ex) {
+            System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
+                    + rox.getX() + ", " + rox.getY()
+                    + ": Fehler beim lesen der benachbarten Felder.");
         }
+        System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
+                + rox.getX() + ", " + rox.getY() + " wurde in Richtung "
+                + rox.getOpenDirection() + " gesetzt.");
+
         return rox;
     }
-    
+
 }

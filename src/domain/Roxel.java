@@ -8,16 +8,11 @@ public class Roxel implements Serializable {
     private String id;
     private Integer x, y;
     private Car.Direction openDirection;
-    private Boolean occupied, junction;
+    private Boolean occupied, junction, carWaiting;
 
     // constructor for Gigaspaces querying
     public Roxel() {
         this.occupied = Boolean.FALSE;
-    }
-
-    public Roxel(Car.Direction direction) {
-        this();
-        this.openDirection = direction;
     }
 
     public Roxel(Integer x, Integer y) {
@@ -30,6 +25,11 @@ public class Roxel implements Serializable {
     public Roxel(Integer x, Integer y, Car.Direction direction) {
         this(x, y);
         this.openDirection = direction;
+    }
+    
+    public Roxel(Integer x, Integer y, Car.Direction direction, boolean carWaiting) {
+        this(x, y, direction);
+        this.carWaiting = carWaiting;
     }
 
     /**
@@ -106,6 +106,14 @@ public class Roxel implements Serializable {
 
     public void setJunction(Boolean junction) {
         this.junction = junction;
+    }
+
+    public Boolean getCarWaiting() {
+        return carWaiting;
+    }
+
+    public void setCarWaiting(Boolean carWaiting) {
+        this.carWaiting = carWaiting;
     }
 
 }

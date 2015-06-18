@@ -38,7 +38,6 @@ public class Main extends BasicGame {
         mapHeight = tiledMap.getHeight();
         mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
-        //xapHelper.initTrafficLights();
         xapHelper.initCars(mapWidth, mapHeight, SPEED);
 
         Car cars[] = xapHelper.readAllCars();
@@ -46,10 +45,6 @@ public class Main extends BasicGame {
         questionMark = new Image("res/question-mark.png");
 
         for (Car car : cars) {
-            /*CarContainer cc = new CarContainer(car);
-            Thread thread = new Thread(cc);
-            thread.start();
-            carContainerThreads.add(thread);*/
             xapHelper.createCarProcess(car);
         }
         

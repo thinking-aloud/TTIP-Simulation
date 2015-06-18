@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package logic;
 
 import domain.Car;
@@ -10,29 +5,20 @@ import domain.CarAllowance;
 import domain.Roxel;
 import domain.RoxelRegistration;
 import gui.Main;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openspaces.core.GigaSpace;
-import org.openspaces.core.context.GigaSpaceContext;
 import org.openspaces.events.EventDriven;
 import org.openspaces.events.EventTemplate;
 import org.openspaces.events.adapter.SpaceDataEvent;
 import org.openspaces.events.notify.Notify;
 import org.openspaces.events.notify.NotifyType;
 
-/**
- *
- * @author jo
- */
 @EventDriven
 @Notify(performTakeOnNotify = true, ignoreEventOnNullTake = true)
 @NotifyType(write = true, update = true)
 public class CarProcess {
 
     private final Car car;
-
-    @GigaSpaceContext
-    GigaSpace gs;
+    private final GigaSpace gs;
 
     public CarProcess(Car car, GigaSpace gs) {
         this.car = car;
@@ -45,40 +31,6 @@ public class CarProcess {
         return new CarAllowance(this.car.getId());
     }
 
-    /*@EventTemplate
-     public Roxel desiredRoxel() {
-     System.out.println("CarProcess.desiredRoxel()");
-     Roxel template;
-     switch (this.car.getDrivingDirection()) {
-     case EAST:
-     //                if (this.car.getX() < Main.mapWidth - 1) {
-     //                    template = new Roxel(this.car.getX() + 1,
-     //                            this.car.getY(), Car.Direction.EAST);
-     //                } else {
-     //                    template = new Roxel(0, this.car.getY(), Car.Direction.EAST);
-     //                }
-     template = new Roxel(Car.Direction.EAST);
-     break;
-     case SOUTH:
-     //                if (this.car.getY() < Main.mapHeight - 1) {
-     //                    template = new Roxel(this.car.getX(),
-     //                            this.car.getY() + 1, Car.Direction.SOUTH);
-     //                } else {
-     //                    template = new Roxel(this.car.getX(),
-     //                            0, Car.Direction.SOUTH);
-     //                }
-     template = new Roxel(Car.Direction.SOUTH);
-     break;
-     default:
-     template = null;
-     break;
-     }
-     /*if (template != null) {
-     System.out.println("Car " + this.car.getId() + " wants to move to "
-     + template.getX() + ", " + template.getY());
-     }/
-     return template;
-     }*/
     @SpaceDataEvent
     public void move(CarAllowance allowance) {
         // takes the allowance out of the TS. Prevends instance flooding
@@ -90,13 +42,11 @@ public class CarProcess {
             Roxel currentRoxel = gs.take(template);
             Roxel nextRoxel = gs.readById(Roxel.class, allowance.getRoxelId());
             if (nextRoxel != null) {
-//                System.out.println("CarProcess.move(" + nextRoxel.getX() + ", " + nextRoxel.getY() + ")");
+                nextRoxel.setCarWaiting(Boolean.FALSE);
 
                 if (currentRoxel != null) {
                     if (!nextRoxel.isOccupied()
                             && (nextRoxel.getOpenDirection() == this.car.getDrivingDirection())) {
-                        /*System.out.println("Car " + this.car.getId() + " is about to move to "
-                         + rox.getX() + ", " + rox.getY());*/
 
                         // set next roxel occupied
                         nextRoxel.setOccupied(true);
@@ -104,18 +54,17 @@ public class CarProcess {
                         // move car
                         car.setX(nextRoxel.getX());
                         car.setY(nextRoxel.getY());
-                        gs.write(this.car);
+                        gs.write(car);
 
                         // pass old roxel to trafficLight or TS
                         currentRoxel.setOccupied(false);
+
                         if (currentRoxel.isJunction() != null && currentRoxel.isJunction()) {
                             currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
                         }
-                        /*System.out.println("Car " + this.car.getId() + " moved to "
-                         + this.car.getX() + ", " + this.car.getY());*/
                     }
-                    gs.write(currentRoxel);
                 }
+                gs.write(currentRoxel);
             }
             gs.write(nextRoxel);
         }
@@ -151,9 +100,12 @@ public class CarProcess {
 
         if (nextRoxel != null) {
             reg = new RoxelRegistration(nextRoxel.getId(), this.car.getId(), time);
-
+            Roxel rox = gs.take(nextRoxel);
+            if (rox != null) {
+                rox.setCarWaiting(Boolean.TRUE);
+                gs.write(rox);
+            }
         } else {
-
             System.out.println("CarProcess.readNextRoxel(): " + car.getDrivingDirection() + ", "
                     + car.getX() + ", " + car.getY());
 

@@ -13,7 +13,6 @@ public class Car {
 
     private String id;
     private Direction drivingDirection;
-//    private Roxel occupiedRoxel;
     private Integer speed, x, y;
 
     public Car(Direction dir, Integer speed) {
@@ -56,13 +55,6 @@ public class Car {
         this.drivingDirection = drivingDirection;
     }
 
-//    public Roxel getOccupiedRoxel() {
-//        return occupiedRoxel;
-//    }
-//
-//    public void setOccupiedRoxel(Roxel occupiedRoxel) {
-//        this.occupiedRoxel = occupiedRoxel;
-//    }
     public Integer getSpeed() {
         return speed;
     }

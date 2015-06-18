@@ -19,7 +19,6 @@ public class CarContainer implements Runnable {
     private static final int verticalOffsetX = 10;
     private static final int verticalOffsetY = 23;
     private static final int tileSize = 64;
-    private static final boolean trafficControl = true;
 
     private final XapHelper xapHelper;
 
@@ -72,9 +71,10 @@ public class CarContainer implements Runnable {
             }
 
             // passes the Roxel to the traffic process
-            if (trafficControl && currentRoxel.isJunction()) {
+            if (currentRoxel.isJunction()) {
                 currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
             }
+            xapHelper.writeToTupelspace(currentRoxel);
             
         }
     }
