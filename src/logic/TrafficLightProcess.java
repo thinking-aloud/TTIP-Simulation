@@ -19,7 +19,7 @@ public class TrafficLightProcess {
     int x, y;
     private final String previousNorth;
     private final String previousWest;
-    private Car.Direction lastDirection;
+    private final Car.Direction lastDirection;
     //private long lastLightSwitch;
     //private static final Integer timeBetweenSwitch = 5; // in seconds
 
@@ -106,10 +106,10 @@ public class TrafficLightProcess {
                     + rox.getX() + ", " + rox.getY()
                     + ": Fehler beim lesen der benachbarten Felder.");
         }
-        /*System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
-                + rox.getX() + ", " + rox.getY() + " wurde in Richtung "
-                + rox.getOpenDirection() + " gesetzt.");*/
-        this.lastDirection = rox.getOpenDirection();
+//        System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
+//                + rox.getX() + ", " + rox.getY() + " wurde in Richtung "
+//                + rox.getOpenDirection() + " gesetzt.");
+//        this.lastDirection = rox.getOpenDirection();
         return rox;
     }
 

@@ -4,7 +4,6 @@ import helper.CarContainer;
 import domain.Car;
 import domain.Roxel;
 import helper.XapHelper;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.newdawn.slick.AppGameContainer;
@@ -19,7 +18,6 @@ public class Main extends BasicGame {
 
     private TiledMap tiledMap;
     static final int FPS = 60;
-    static final int SPEED = 1000; // sleep between updates (0=fastest)
     private final XapHelper xapHelper;
     private static Image arrow, questionMark;
     public static int mapHeight;
@@ -36,7 +34,7 @@ public class Main extends BasicGame {
         mapHeight = tiledMap.getHeight();
         mapWidth = tiledMap.getWidth();
         xapHelper.initRoxels(mapWidth, mapHeight);
-        xapHelper.initCars(mapWidth, mapHeight, SPEED);
+        xapHelper.initCars(mapWidth, mapHeight);
 
         Car cars[] = xapHelper.readAllCars();
         arrow = new Image("res/arrow.png");

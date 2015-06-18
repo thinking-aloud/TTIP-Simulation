@@ -3,13 +3,11 @@ package helper;
 import domain.Car;
 import domain.Roxel;
 import gui.Main;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Point;
 
-public class CarContainer implements Runnable {
+public class CarContainer {
     
     private final Car car;
     private final Image image;
@@ -120,18 +118,6 @@ public class CarContainer implements Runnable {
                 }
         }
         return null;
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            move();
-            try {
-                Thread.sleep(car.getSpeed());
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CarContainer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
     
        public Image getImage() {

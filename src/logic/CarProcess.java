@@ -105,9 +105,9 @@ public class CarProcess {
             nextRoxel.setCarWaiting(Boolean.TRUE);
             gs.write(nextRoxel);
         } else {
-            System.out.println("CarProcess.registerForNextRoxel(): Car " + this.car.getX()
-                    + ", " + this.car.getY() + ", " + this.car.getDrivingDirection()
-                    + " couldn't register for next roxel.");
+//            System.out.println("CarProcess.registerForNextRoxel(): Car " + this.car.getX()
+//                    + ", " + this.car.getY() + ", " + this.car.getDrivingDirection()
+//                    + " couldn't register for next roxel.");
 
             reg = new RoxelRegistration(null, this.car.getId(), time);
         }

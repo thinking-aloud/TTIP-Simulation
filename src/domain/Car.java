@@ -13,17 +13,16 @@ public class Car {
 
     private String id;
     private Direction drivingDirection;
-    private Integer speed, x, y;
-
-    public Car(Direction dir, Integer speed) {
-        this.drivingDirection = dir;
-        this.speed = speed;
-    }
+    private Integer x, y;
 
     /**
      * empty constructor used by TS
      */
     public Car() {
+    }
+
+    public Car(Direction dir) {
+        this.drivingDirection = dir;
     }
 
     /**
@@ -53,14 +52,6 @@ public class Car {
      */
     public void setDrivingDirection(Direction drivingDirection) {
         this.drivingDirection = drivingDirection;
-    }
-
-    public Integer getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(Integer speed) {
-        this.speed = speed;
     }
 
     public Integer getX() {

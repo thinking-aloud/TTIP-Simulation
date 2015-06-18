@@ -74,8 +74,8 @@ public class XapHelper {
         nelc.start();
     }
 
-    public void initCars(int mapWidth, int mapHeight, int speed) throws SlickException {
-        System.out.println("XapHelper.initCars(" + mapWidth + ", " + mapHeight + ", " + speed + ")");
+    public void initCars(int mapWidth, int mapHeight) throws SlickException {
+        System.out.println("XapHelper.initCars(" + mapWidth + ", " + mapHeight + ")");
         // Horizontal
         for (int row = 0; row < mapHeight; row++) {
             for (int column = 0; column < horizontalCarRows; column++) {
@@ -92,7 +92,7 @@ public class XapHelper {
                             gigaSpace.write(roxel);
 
                             // place car
-                            Car car = new Car(Car.Direction.EAST, speed);
+                            Car car = new Car(Car.Direction.EAST);
                             car.setX(rox.getX());
                             car.setY(rox.getY());
                             gigaSpace.write(car);
@@ -119,7 +119,7 @@ public class XapHelper {
                             gigaSpace.write(roxel);
 
                             // place car
-                            Car car = new Car(Car.Direction.SOUTH, speed);
+                            Car car = new Car(Car.Direction.SOUTH);
                             car.setX(rox.getX());
                             car.setY(rox.getY());
                             gigaSpace.write(car);
