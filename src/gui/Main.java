@@ -61,12 +61,12 @@ public class Main extends BasicGame {
     }
 
     @Override
-    public void update(GameContainer gc, int delta) throws SlickException {
+    public void update(GameContainer gc, int delta) {
         // not used due to thread usage
     }
 
     @Override
-    public void render(GameContainer gc, Graphics g) throws SlickException {
+    public void render(GameContainer gc, Graphics g) {
         tiledMap.render(0, 0);
 
         for (Roxel roxel : xapHelper.readAllRoxels()) {

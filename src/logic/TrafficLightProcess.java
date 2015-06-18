@@ -84,10 +84,13 @@ public class TrafficLightProcess {
                     }
                     break;
             }
+        } else if(prevNorth == null) {
+            System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
+                    + rox.getX() + ", " + rox.getY() + ": North is null.");
         } else {
             System.out.println("TrafficLightProcess.eventListener(): Kreuzung "
-                    + rox.getX() + ", " + rox.getY()
-                    + ": Fehler beim lesen der benachbarten Felder.");
+                    + rox.getX() + ", " + rox.getY() + ": West is null.");
+            
         }
         return rox;
     }
