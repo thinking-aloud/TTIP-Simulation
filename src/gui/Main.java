@@ -1,6 +1,5 @@
 package gui;
 
-import helper.CarContainer;
 import domain.Car;
 import domain.Roxel;
 import helper.XapHelper;
@@ -12,6 +11,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Point;
 import org.newdawn.slick.tiled.TiledMap;
 
 public class Main extends BasicGame {
@@ -22,6 +22,13 @@ public class Main extends BasicGame {
     private static Image arrow, questionMark;
     public static int mapHeight;
     public static int mapWidth;
+    private Image red, blue;
+
+    private static final int horizontalOffsetX = 17;
+    private static final int horizontalOffsetY = 32;
+    private static final int verticalOffsetX = 10;
+    private static final int verticalOffsetY = 23;
+    private static final int tileSize = 64;
 
     public Main(String gamename) {
         super(gamename);
@@ -39,6 +46,12 @@ public class Main extends BasicGame {
         Car cars[] = xapHelper.readAllCars();
         arrow = new Image("res/arrow.png");
         questionMark = new Image("res/question-mark.png");
+
+        red = new Image("res/car_red.png");
+
+        Image img = new Image("res/car_blue.png");
+        img.rotate(90);
+        blue = img;
 
         for (Car car : cars) {
             xapHelper.createCarProcess(car);
@@ -71,19 +84,34 @@ public class Main extends BasicGame {
         }
 
         for (Car car : xapHelper.readAllCars()) {
-            try {
-                CarContainer cc = new CarContainer(car);
 
-                float x = cc.getPosition().getX();
-                float y = cc.getPosition().getY();
+            float x = getPosition(car).getX();
+            float y = getPosition(car).getY();
 
-                cc.getImage().draw(x, y);
-
-            } catch (SlickException e) {
-                System.out.println(e);
+            if (car.getDrivingDirection() == Car.Direction.EAST) {
+                red.draw(x, y);
+            } else {
+                blue.draw(x, y);
             }
         }
 
+    }
+
+    // returns the position of the car in pixels
+    public Point getPosition(Car car) {
+        float x = car.getX() * tileSize;
+        float y = car.getY() * tileSize;
+        switch (car.getDrivingDirection()) {
+            case EAST:
+                x += horizontalOffsetX;
+                y += horizontalOffsetY;
+                break;
+            case SOUTH:
+                x += verticalOffsetX;
+                y += verticalOffsetY;
+        }
+
+        return new Point(x, y);
     }
 
     public static void main(String[] args) {
