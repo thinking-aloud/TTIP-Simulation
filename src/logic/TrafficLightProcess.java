@@ -51,7 +51,7 @@ public class TrafficLightProcess {
 
     @SpaceDataEvent
     public Roxel eventListener(Roxel rox) {
-        System.out.println("TrafficLightProcess.eventListener(" + rox.getX() + ", " + rox.getY() + ")");
+//        System.out.println("TrafficLightProcess.eventListener(" + rox.getX() + ", " + rox.getY() + ")");
 
         // switch traffic light
         long currentTime = System.currentTimeMillis();

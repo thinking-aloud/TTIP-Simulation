@@ -63,10 +63,10 @@ public class CarProcess {
                             currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
                         }
                     }
+                    gs.write(currentRoxel);
                 }
-                gs.write(currentRoxel);
+                gs.write(nextRoxel);
             }
-            gs.write(nextRoxel);
         }
         registerForNextRoxel();
     }
