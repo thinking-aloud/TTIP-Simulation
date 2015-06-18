@@ -1,8 +1,6 @@
 package helper;
 
 import domain.Car;
-import domain.Roxel;
-import gui.Main;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Point;
@@ -18,11 +16,8 @@ public class CarContainer {
     private static final int verticalOffsetY = 23;
     private static final int tileSize = 64;
 
-    private final XapHelper xapHelper;
-
     public CarContainer(Car car) throws SlickException {
         this.car = car;
-        this.xapHelper = new XapHelper();
 
         switch (car.getDrivingDirection()) {
             case EAST:
@@ -34,46 +29,6 @@ public class CarContainer {
                 break;
             default:
                 image = new Image("res/car_red.png");
-        }
-    }
-
-    //
-    // public methods
-    //
-    public void move() {
-        System.out.println("CarContainer.move()");
-
-        Roxel template = new Roxel((int) car.getX(), (int) car.getY());
-        template.setOccupied(true);
-        Roxel currentRoxel = xapHelper.takeRoxel(template);
-
-        if (currentRoxel != null) {
-            Roxel nextRoxel = takeNextRoxel(currentRoxel);
-
-            if (nextRoxel != null) {
-                if (!nextRoxel.isOccupied()
-                        && xapHelper.isGreen(nextRoxel, car.getDrivingDirection())) {
-
-                    // set next roxel occupied
-                    nextRoxel.setOccupied(true);
-
-                    // move car
-                    car.setX(nextRoxel.getX());
-                    car.setY(nextRoxel.getY());
-                    xapHelper.writeToTupelspace(car);
-
-                    // pass old roxel to trafficLight or TS
-                    currentRoxel.setOccupied(false);
-                }
-                xapHelper.writeToTupelspace(nextRoxel);
-            }
-
-            // passes the Roxel to the traffic process
-            if (currentRoxel.isJunction()) {
-                currentRoxel.setOpenDirection(Car.Direction.TODECIDE);
-            }
-            xapHelper.writeToTupelspace(currentRoxel);
-            
         }
     }
 
@@ -92,32 +47,6 @@ public class CarContainer {
         }
 
         return new Point(x, y);
-    }
-
-    private Roxel takeNextRoxel(Roxel currentRoxel) {
-        switch (car.getDrivingDirection()) {
-            case EAST:
-                if(currentRoxel.getX() < Main.mapWidth -1) {
-                    Roxel template = new Roxel(currentRoxel.getX() + 1, 
-                            currentRoxel.getY(), Car.Direction.EAST);
-                    return xapHelper.takeRoxel(template);
-                } else {
-                    Roxel template = new Roxel(0, 
-                            currentRoxel.getY(), Car.Direction.EAST);
-                    return xapHelper.takeRoxel(template);
-                }
-            case SOUTH:
-                if(currentRoxel.getY() < Main.mapHeight - 1) {
-                    Roxel template = new Roxel(currentRoxel.getX(), 
-                            currentRoxel.getY() + 1, Car.Direction.SOUTH);
-                    return xapHelper.takeRoxel(template);
-                } else {
-                    Roxel template = new Roxel(currentRoxel.getX(), 
-                            0, Car.Direction.SOUTH);
-                    return xapHelper.takeRoxel(template);
-                }
-        }
-        return null;
     }
     
        public Image getImage() {
