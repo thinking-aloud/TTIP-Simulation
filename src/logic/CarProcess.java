@@ -90,7 +90,14 @@ public class CarProcess {
                     template = new Roxel(this.car.getX(), 0);
                 }
         }
-        return gs.take(template);
+        if (template != null) {
+            if (template.getX() <= Main.mapWidth / 2) {
+                template.setTileNumber(0);
+            } else {
+                template.setTileNumber(1);
+            }
+        }
+        return gs.takeIfExists(template);
     }
 
     private void registerForNextRoxel() {
